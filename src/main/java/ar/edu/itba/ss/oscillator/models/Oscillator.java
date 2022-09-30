@@ -23,16 +23,16 @@ public class Oscillator {
     @Getter @Setter
     private OscillatorAlgorithm algorithm;
     @Getter @Setter
-    private double dt;
+    private double t;
+    @Getter
+    private final double dt;
     @Getter @Setter
     private double tf;
-    @Getter @Setter
-    private double dt2;
 
-    public Oscillator(double amplitude, double position, double velocity, double mass, double k, double gamma, OscillatorAlgorithm algorithm, double dt, double tf) {
+    public Oscillator(double amplitude, double position, double mass, double k, double gamma, OscillatorAlgorithm algorithm, double dt, double tf) {
         this.amplitude = amplitude;
         this.position = position;
-        this.velocity = velocity;
+        this.velocity = -amplitude * gamma / (2 * mass);
         this.acceleration = (-k * position - gamma * velocity) / mass;
         this.mass = mass;
         this.k = k;
@@ -40,15 +40,22 @@ public class Oscillator {
         this.algorithm = algorithm;
         this.dt = dt;
         this.tf = tf;
-        this.dt2 = 10 * dt;
+    }
+
+    public Oscillator(Builder builder) {
+        this(builder.amplitude, builder.position, builder.mass, builder.k, builder.gamma, builder.algorithm, builder.dt, builder.tf);
     }
 
     public void run() {
-        double t = 0;
-        while (t < tf) {
-            algorithm.run(this, dt);
-            t += dt;
-            // TODO if (t/dt2 == (int) t/dt2) print
+        this.t = 0;
+        int i = 0;
+        while (this.t < this.tf) {
+            algorithm.run(this);
+            if (i % 10 == 0) {
+                System.out.println(this.position);
+            }
+            this.t += this.dt;
+            i++;
         }
     }
 
@@ -56,7 +63,6 @@ public class Oscillator {
     public static class Builder {
         private double amplitude;
         private double position;
-        private double velocity;
         private double mass;
         private double k;
         private double gamma;
@@ -71,11 +77,6 @@ public class Oscillator {
 
         public Builder position(double position) {
             this.position = position;
-            return this;
-        }
-
-        public Builder velocity(double velocity) {
-            this.velocity = velocity;
             return this;
         }
 
@@ -110,7 +111,7 @@ public class Oscillator {
         }
 
         public Oscillator build() {
-            return new Oscillator(amplitude, position, velocity, mass, k, gamma, algorithm, dt, tf);
+            return new Oscillator(this);
         }
     }
 }
