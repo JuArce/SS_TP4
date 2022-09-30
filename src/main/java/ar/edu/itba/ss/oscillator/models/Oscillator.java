@@ -1,7 +1,9 @@
 package ar.edu.itba.ss.oscillator.models;
 
 import ar.edu.itba.ss.oscillator.algorithms.Analytic;
+import ar.edu.itba.ss.oscillator.interfaces.Exporter;
 import ar.edu.itba.ss.oscillator.interfaces.OscillatorAlgorithm;
+import ar.edu.itba.ss.oscillator.utils.CsvExporter;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,22 +17,22 @@ public class Oscillator {
     private double velocity;
     @Getter @Setter
     private double acceleration;
-    @Getter @Setter
-    private double mass;
-    @Getter @Setter
-    private double k;
-    @Getter @Setter
-    private double gamma;
+    @Getter
+    private final double mass;
+    @Getter
+    private final double k;
+    @Getter
+    private final double gamma;
     @Getter @Setter
     private OscillatorAlgorithm algorithm;
     @Getter @Setter
     private double t;
     @Getter
     private final double dt;
-    @Getter @Setter
-    private double tf;
+    private final double tf;
+    private final Exporter exporter;
 
-    public Oscillator(double amplitude, double position, double mass, double k, double gamma, OscillatorAlgorithm algorithm, double dt, double tf) {
+    public Oscillator(double amplitude, double position, double mass, double k, double gamma, OscillatorAlgorithm algorithm, double dt, double tf, Exporter exporter) {
         this.amplitude = amplitude;
         this.position = position;
         this.velocity = -amplitude * gamma / (2 * mass);
@@ -41,10 +43,11 @@ public class Oscillator {
         this.algorithm = algorithm;
         this.dt = dt;
         this.tf = tf;
+        this.exporter = exporter;
     }
 
     public Oscillator(Builder builder) {
-        this(builder.amplitude, builder.position, builder.mass, builder.k, builder.gamma, builder.algorithm, builder.dt, builder.tf);
+        this(builder.amplitude, builder.position, builder.mass, builder.k, builder.gamma, builder.algorithm, builder.dt, builder.tf, builder.exporter);
     }
 
     public void run() {
@@ -54,6 +57,9 @@ public class Oscillator {
             algorithm.run(this);
             if (i % 1 == 0) {
                 System.out.println(this.position);
+                if (exporter != null) {
+                    exporter.export(i, this.t, this.position, this.velocity);
+                }
             }
             this.t += this.dt;
             i++;
@@ -70,6 +76,7 @@ public class Oscillator {
         private OscillatorAlgorithm algorithm = new Analytic();
         private double dt;
         private double tf;
+        private Exporter exporter;
 
         public Builder amplitude(double amplitude) {
             this.amplitude = amplitude;
@@ -108,6 +115,11 @@ public class Oscillator {
 
         public Builder tf(double tf) {
             this.tf = tf;
+            return this;
+        }
+
+        public Builder exporter(Exporter exporter) {
+            this.exporter = exporter;
             return this;
         }
 
