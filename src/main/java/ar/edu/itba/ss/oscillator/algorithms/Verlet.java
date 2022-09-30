@@ -9,5 +9,5 @@ public class Verlet implements OscillatorAlgorithm {
         // TODO Auto-generated method stub
 
     }
-    
+
 }

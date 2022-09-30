@@ -9,6 +9,5 @@ public class GearPredictorCorrector implements OscillatorAlgorithm {
         // TODO Auto-generated method stub
 
     }
-
-}
+    
 }
