@@ -6,20 +6,20 @@ import lombok.Setter;
 public class Velocity {
 
     @Getter @Setter
-    private double xSpeed;
+    private double speed;
     @Getter @Setter
-    private double ySpeed;
+    private double angle;
 
-    public Velocity(double speedX, double speedY) {
-        this.xSpeed = speedX;
-        this.ySpeed = speedY;
+    public Velocity(double speed, double angle) {
+        this.speed = speed;
+        this.angle = angle;
     }
 
     @Override
     public String toString() {
         return "Velocity{" +
-                "xSpeed=" + xSpeed +
-                ", ySpeed=" + ySpeed +
+                "speed=" + speed +
+                ", angle=" + angle +
                 '}';
     }
 }
