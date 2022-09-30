@@ -3,7 +3,6 @@ package ar.edu.itba.ss.oscillator.models;
 import ar.edu.itba.ss.oscillator.algorithms.Analytic;
 import ar.edu.itba.ss.oscillator.interfaces.Exporter;
 import ar.edu.itba.ss.oscillator.interfaces.OscillatorAlgorithm;
-import ar.edu.itba.ss.oscillator.utils.CsvExporter;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -56,7 +55,7 @@ public class Oscillator {
         while (this.t < this.tf) {
             algorithm.run(this);
             if (i % 1 == 0) {
-                System.out.println(this.position);
+//                System.out.println(this.position);
                 if (exporter != null) {
                     exporter.export(i, this.t, this.position, this.velocity);
                 }

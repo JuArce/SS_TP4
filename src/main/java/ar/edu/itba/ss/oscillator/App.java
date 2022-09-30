@@ -1,9 +1,6 @@
 package ar.edu.itba.ss.oscillator;
 
-import ar.edu.itba.ss.oscillator.algorithms.Analytic;
-import ar.edu.itba.ss.oscillator.algorithms.Beeman;
 import ar.edu.itba.ss.oscillator.algorithms.GearPredictorCorrector;
-import ar.edu.itba.ss.oscillator.algorithms.Verlet;
 import ar.edu.itba.ss.oscillator.interfaces.Exporter;
 import ar.edu.itba.ss.oscillator.interfaces.OscillatorAlgorithm;
 import ar.edu.itba.ss.oscillator.models.Oscillator;
