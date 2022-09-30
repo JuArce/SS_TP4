@@ -2,6 +2,7 @@ package ar.edu.itba.ss.oscillator;
 
 import ar.edu.itba.ss.oscillator.algorithms.Analytic;
 import ar.edu.itba.ss.oscillator.algorithms.Beeman;
+import ar.edu.itba.ss.oscillator.algorithms.GearPredictorCorrector;
 import ar.edu.itba.ss.oscillator.algorithms.Verlet;
 import ar.edu.itba.ss.oscillator.interfaces.OscillatorAlgorithm;
 import ar.edu.itba.ss.oscillator.models.Oscillator;
@@ -19,7 +20,7 @@ public class App {
                 .tf(5)
                 .build();
 
-        final OscillatorAlgorithm algorithm = new Beeman(oscillator);
+        final OscillatorAlgorithm algorithm = new GearPredictorCorrector();
         oscillator.setAlgorithm(algorithm);
         oscillator.run();
     }
