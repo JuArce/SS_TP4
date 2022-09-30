@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import java.util.Objects;
 
-public class Particle implements Movable {
+public class Particle {
 
     public static int sequence = 0;
 
@@ -39,11 +39,6 @@ public class Particle implements Movable {
 
     public Particle(double radius, double mass) {
         this(radius, mass,0, new Velocity(0, 0));
-    }
-
-    @Override
-    public void move(double dt) {
-        
     }
 
     @Override
