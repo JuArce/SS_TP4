@@ -1,5 +1,6 @@
 package ar.edu.itba.ss.oscillator.models;
 
+import ar.edu.itba.ss.oscillator.algorithms.Analytic;
 import ar.edu.itba.ss.oscillator.interfaces.OscillatorAlgorithm;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,7 +52,7 @@ public class Oscillator {
         int i = 0;
         while (this.t < this.tf) {
             algorithm.run(this);
-            if (i % 10 == 0) {
+            if (i % 1 == 0) {
                 System.out.println(this.position);
             }
             this.t += this.dt;
@@ -66,7 +67,7 @@ public class Oscillator {
         private double mass;
         private double k;
         private double gamma;
-        private OscillatorAlgorithm algorithm;
+        private OscillatorAlgorithm algorithm = new Analytic();
         private double dt;
         private double tf;
 
