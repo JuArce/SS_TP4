@@ -8,7 +8,7 @@ public class Verlet implements OscillatorAlgorithm {
     private double prevPosition;
 
     public Verlet(Oscillator oscillator) {
-        this.prevPosition = oscillator.getPosition() + oscillator.getVelocity() * oscillator.getDt();
+        this.prevPosition = oscillator.getPosition() - oscillator.getVelocity() * oscillator.getDt() + 0.5 * Math.pow(oscillator.getDt(), 2) * oscillator.getAcceleration() / oscillator.getMass();
     }
 
     @Override
