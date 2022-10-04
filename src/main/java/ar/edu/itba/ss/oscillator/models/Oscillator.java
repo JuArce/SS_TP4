@@ -53,14 +53,13 @@ public class Oscillator {
         this.t = 0;
         int i = 0;
         while (this.t < this.tf) {
-            algorithm.run(this);
             if (i % 1 == 0) {
-//                System.out.println(this.position);
                 if (exporter != null) {
                     exporter.export(i, this.t, this.position, this.velocity);
                 }
             }
             this.t += this.dt;
+            algorithm.run(this);
             i++;
         }
     }
