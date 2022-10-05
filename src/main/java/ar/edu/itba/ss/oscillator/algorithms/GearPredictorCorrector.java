@@ -24,9 +24,9 @@ public class GearPredictorCorrector implements OscillatorAlgorithm {
     private final double alpha5 = 1/60.0;
 
     public GearPredictorCorrector(Oscillator oscillator){
-        this.r3 = -(oscillator.getK() / oscillator.getMass()) * oscillator.getVelocity();
-        this.r4 = Math.pow((oscillator.getK() / oscillator.getMass()), 2) * oscillator.getAcceleration();
-        this.r5 = Math.pow((oscillator.getK() / oscillator.getMass()), 2) * this.r3;
+        this.r3 = (- oscillator.getK() * oscillator.getVelocity() - oscillator.getGamma() * oscillator.getAcceleration()) / oscillator.getMass();
+        this.r4 = (- oscillator.getK() * oscillator.getAcceleration() - oscillator.getGamma() * r3) / oscillator.getMass();
+        this.r5 = (- oscillator.getK() * r3 - oscillator.getGamma() * r4) / oscillator.getMass();
         this.rp0 = 0;
         this.rp1 = 0;
         this.rp2 = 0;
