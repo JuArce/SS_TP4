@@ -92,7 +92,7 @@ public class MultiDtApp {
                     .tf(tf)
                     .exporter(exporter)
                     .build();
-            final OscillatorAlgorithm gear = new GearPredictorCorrector();
+            final OscillatorAlgorithm gear = new GearPredictorCorrector(oscillator4);
             oscillator4.setAlgorithm(gear);
             oscillator4.run();
             exporter.close();

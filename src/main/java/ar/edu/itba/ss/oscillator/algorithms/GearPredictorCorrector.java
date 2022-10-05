@@ -16,17 +16,17 @@ public class GearPredictorCorrector implements OscillatorAlgorithm {
     private double rp4;
     private double rp5;
 
-    private double alpha0 = 3/16.0;
-    private double alpha1 = 251/360.0;
-    private double alpha2 = 1;
-    private double alpha3 = 11/18.0;
-    private double alpha4 = 1/6.0;
-    private double alpha5 = 1/60.0;
+    private final double alpha0 = 3/16.0;
+    private final double alpha1 = 251/360.0;
+    private final double alpha2 = 1;
+    private final double alpha3 = 11/18.0;
+    private final double alpha4 = 1/6.0;
+    private final double alpha5 = 1/60.0;
 
-    public GearPredictorCorrector(){
-        this.r3 = 0;
-        this.r4 = 0;
-        this.r5 = 0;
+    public GearPredictorCorrector(Oscillator oscillator){
+        this.r3 = -(oscillator.getK() / oscillator.getMass()) * oscillator.getVelocity();
+        this.r4 = Math.pow((oscillator.getK() / oscillator.getMass()), 2) * oscillator.getAcceleration();
+        this.r5 = Math.pow((oscillator.getK() / oscillator.getMass()), 2) * this.r3;
         this.rp0 = 0;
         this.rp1 = 0;
         this.rp2 = 0;
@@ -36,7 +36,7 @@ public class GearPredictorCorrector implements OscillatorAlgorithm {
     }
 
     //factorial function
-    private double factorial(int n){
+    private int factorial(int n){
         if(n == 0){
             return 1;
         }
