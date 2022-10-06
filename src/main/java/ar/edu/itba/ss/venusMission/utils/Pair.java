@@ -14,4 +14,8 @@ public class Pair {
         this.x = x;
         this.y = y;
     }
+
+    public Pair sum(Pair other) {
+        return new Pair(this.x + other.x, this.y + other.y);
+    }
 }

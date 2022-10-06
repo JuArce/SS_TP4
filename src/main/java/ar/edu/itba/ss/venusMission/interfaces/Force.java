@@ -15,4 +15,6 @@ public interface Force {
     Pair getVelocity();
 
     Pair getAcceleration();
+
+    double getMass();
 }
