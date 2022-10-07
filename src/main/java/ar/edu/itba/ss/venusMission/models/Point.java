@@ -5,9 +5,9 @@ import lombok.Setter;
 
 public class Point {
     @Getter @Setter
-    private final double x;
+    private double x;
     @Getter @Setter
-    private final double y;
+    private double y;
 
     public Point(double x, double y) {
         this.x = x;
@@ -16,5 +16,10 @@ public class Point {
 
     public double distanceTo(Point other) {
         return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
+    }
+
+    @Override
+    public String toString() {
+        return "x: " + x + ", y: " + y;
     }
 }

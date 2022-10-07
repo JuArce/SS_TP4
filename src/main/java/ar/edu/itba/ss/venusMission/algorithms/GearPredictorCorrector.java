@@ -29,7 +29,7 @@ public class GearPredictorCorrector implements Algorithm {
     private final List<Pair> rp4;
     private final List<Pair> rp5;
 
-    private final List<Pair> dR2;
+    private List<Pair> dR2;
 
     private final double alpha0 = 3 / 20.;
     private final double alpha1 = 251 / 360.;
@@ -73,7 +73,10 @@ public class GearPredictorCorrector implements Algorithm {
     public void run(List<CelestialBody> objects, double dt) {
         // Predict each object
         for (int i = 0; i < objects.size(); i++) {
-            final CelestialBody o = objects.get(i);
+            if (objects.get(i).getName().equals("Sun")) continue;
+            final Pair r0 = this.r0.get(i);
+            final Pair r1 = this.r1.get(i);
+            final Pair r2 = this.r2.get(i);
             final Pair r3 = this.r3.get(i);
             final Pair r4 = this.r4.get(i);
             final Pair r5 = this.r5.get(i);
@@ -83,22 +86,29 @@ public class GearPredictorCorrector implements Algorithm {
             final Pair rp3 = this.rp3.get(i);
             final Pair rp4 = this.rp4.get(i);
             final Pair rp5 = this.rp5.get(i);
-            predict(o, dt, rp0, rp1, rp2, rp3, rp4, rp5, r3, r4, r5);
+            predict(dt, rp0, rp1, rp2, rp3, rp4, rp5, r0, r1, r2, r3, r4, r5);
         }
 
         // Evaluate
         // for each object calculate dRP2
         for (int i = 0; i < objects.size(); i++) {
+            if (objects.get(i).getName().equals("Sun")) {
+                this.dR2.add(new Pair(0, 0));
+                continue;
+            }
             final CelestialBody o = objects.get(i);
             final List<Force> others = objects.stream().filter(m -> !m.equals(o)).collect(Collectors.toList());
             final Pair totalForce = o.apply(others);
 
-            this.dR2.add(new Pair(getDR2(dt,0,this.rp2.get(i).getX()), getDR2(dt,0,this.rp2.get(i).getY())));
+            final double ax = totalForce.getX() / o.getMass();
+            final double ay = totalForce.getY() / o.getMass();
 
+            this.dR2.add(new Pair(getDR2(dt, ax, this.rp2.get(i).getX()), getDR2(dt, ay, this.rp2.get(i).getY())));
         }
 
         // Correct each object
         for (int i = 0; i < objects.size(); i++) {
+            if (objects.get(i).getName().equals("Sun")) continue;
             final Pair rp0 = this.rp0.get(i);
             final Pair rp1 = this.rp1.get(i);
             final Pair rp2 = this.rp2.get(i);
@@ -108,18 +118,38 @@ public class GearPredictorCorrector implements Algorithm {
             correct(dt, this.dR2.get(i), rp0, rp1, rp2, rp3, rp4, rp5);
         }
 
+        // Update each object for the algorithm and the model itself
+        for (int i = 0; i < objects.size(); i++) {
+            if (objects.get(i).getName().equals("Sun")) continue;
+            final CelestialBody o = objects.get(i);
+            final Pair rp0 = this.rp0.get(i);
+            final Pair rp1 = this.rp1.get(i);
+            final Pair rp2 = this.rp2.get(i);
+            final Pair rp3 = this.rp3.get(i);
+            final Pair rp4 = this.rp4.get(i);
+            final Pair rp5 = this.rp5.get(i);
+            final Pair r0 = this.r0.get(i);
+            final Pair r1 = this.r1.get(i);
+            final Pair r2 = this.r2.get(i);
+            final Pair r3 = this.r3.get(i);
+            final Pair r4 = this.r4.get(i);
+            final Pair r5 = this.r5.get(i);
+            update(rp0, rp1, rp2, rp3, rp4, rp5, r0, r1, r2, r3, r4, r5);
+            update(o, r0, r1, r2);
+        }
+        this.dR2 = new ArrayList<>();
     }
 
-    private void predict(CelestialBody object, double dt, Pair rp0, Pair rp1, Pair rp2, Pair rp3, Pair rp4, Pair rp5, Pair r3, Pair r4, Pair r5) {
+    private void predict(double dt, Pair rp0, Pair rp1, Pair rp2, Pair rp3, Pair rp4, Pair rp5, Pair r0, Pair r1, Pair r2, Pair r3, Pair r4, Pair r5) {
         // Predict
-        rp0.setX(predictRp0(dt, object.getPosition().getX(), object.getVelocity().getX(), object.getAcceleration().getX(), r3.getX(), r4.getX(), r5.getX()));
-        rp0.setY(predictRp0(dt, object.getPosition().getY(), object.getVelocity().getY(), object.getAcceleration().getY(), r3.getY(), r4.getY(), r5.getY()));
+        rp0.setX(predictRp0(dt, r0.getX(), r1.getX(), r2.getX(), r3.getX(), r4.getX(), r5.getX()));
+        rp0.setY(predictRp0(dt,r0.getY(), r1.getY(), r2.getY(), r3.getY(), r4.getY(), r5.getY()));
 
-        rp1.setX(predictRp1(dt, object.getVelocity().getX(), object.getAcceleration().getX(), r3.getX(), r4.getX(), r5.getX()));
-        rp1.setY(predictRp1(dt, object.getVelocity().getY(), object.getAcceleration().getY(), r3.getY(), r4.getY(), r5.getY()));
+        rp1.setX(predictRp1(dt, r1.getX(), r2.getX(), r3.getX(), r4.getX(), r5.getX()));
+        rp1.setY(predictRp1(dt, r1.getY(), r2.getY(), r3.getY(), r4.getY(), r5.getY()));
 
-        rp2.setX(predictRp2(dt, object.getAcceleration().getX(), r3.getX(), r4.getX(), r5.getX()));
-        rp2.setY(predictRp2(dt, object.getAcceleration().getY(), r3.getY(), r4.getY(), r5.getY()));
+        rp2.setX(predictRp2(dt, r2.getX(), r3.getX(), r4.getX(), r5.getX()));
+        rp2.setY(predictRp2(dt, r2.getY(), r3.getY(), r4.getY(), r5.getY()));
 
         rp3.setX(predictRp3(dt, r3.getX(), r4.getX(), r5.getX()));
         rp3.setY(predictRp3(dt, r3.getY(), r4.getY(), r5.getY()));
@@ -150,6 +180,26 @@ public class GearPredictorCorrector implements Algorithm {
 
         rp5.setX(correctRp5(dt, dR2.getX(), rp5.getX()));
         rp5.setY(correctRp5(dt, dR2.getY(), rp5.getY()));
+    }
+
+    private void update(Pair rp0, Pair rp1, Pair rp2, Pair rp3, Pair rp4, Pair rp5, Pair r0, Pair r1, Pair r2, Pair r3, Pair r4, Pair r5) {
+        // Update
+        update(rp0, r0);
+        update(rp1, r1);
+        update(rp2, r2);
+        update(rp3, r3);
+        update(rp4, r4);
+        update(rp5, r5);
+    }
+
+    private void update(Pair rp, Pair r) {
+        r.setX(rp.getX());
+        r.setY(rp.getY());
+    }
+      private void update(CelestialBody o, Pair r0, Pair r1, Pair r2) {
+        o.setPosition(r0.getX(), r0.getY());
+        o.setVelocity(r1.getX(), r1.getY());
+        o.setAcceleration(r2.getX(), r2.getY());
     }
 
     private int factorial(int n) {
