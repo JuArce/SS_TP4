@@ -47,27 +47,38 @@ public class SolarSystem {
                 .acceleration(new Pair(0, 0))
                 .build();
 
+        /**
+         * Spaceship initial position and velocity
+         */
+        final double alpha = Math.atan(earth.getPosition().getY() / earth.getPosition().getX());
+        final double x = this.earth.getPosition().getX() - (this.earth.getRadius() + 1500) * Math.cos(alpha);
+        final double y = this.earth.getPosition().getY() - (this.earth.getRadius() + 1500) * Math.sin(alpha);
+        final double v0 = 7.12 + 8;
+        final double vx = this.earth.getVelocity().getX() + v0 * Math.sin(alpha);
+        final double vy = this.earth.getVelocity().getY() - v0 * Math.cos(alpha);
         this.spaceship = new CelestialBody.Builder()
                 .name("Spaceship")
                 .mass(2 * Math.pow(10, 5))
                 .radius(0)
-//                .position(new Point())
-//                .velocity(new Pair())
-//                .acceleration(new Pair())
+                .position(new Point(x, y))
+                .velocity(new Pair(vx, vy))
+                .acceleration(new Pair(0, 0))
                 .build();
 
         /**
          * Set all accelerations
          */
-        final Pair venusForce = this.venus.apply(List.of(sun, earth));
+        final Pair venusForce = this.venus.apply(List.of(sun, earth, spaceship));
         this.venus.setAcceleration(venusForce.getX() / this.venus.getMass(), venusForce.getY() / this.venus.getMass());
-        final Pair earthForce = this.earth.apply(List.of(sun, venus));
+        final Pair earthForce = this.earth.apply(List.of(sun, venus, spaceship));
         this.earth.setAcceleration(earthForce.getX() / this.earth.getMass(), earthForce.getY() / this.earth.getMass());
+        final Pair spaceshipForce = this.spaceship.apply(List.of(sun, venus, earth));
+        this.spaceship.setAcceleration(spaceshipForce.getX() / this.spaceship.getMass(), spaceshipForce.getY() / this.spaceship.getMass());
 
         this.exporter = exporter;
         this.dt = dt;
         this.tf = tf;
-        this.bodies = List.of(sun, venus, earth);
+        this.bodies = List.of(sun, venus, earth, spaceship);
         this.algorithm = new GearPredictorCorrector(this.bodies);
     }
 

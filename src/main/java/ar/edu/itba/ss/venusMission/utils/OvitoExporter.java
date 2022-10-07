@@ -37,7 +37,7 @@ public class OvitoExporter implements Exporter {
             csvWriterAppender.writeNext(new String[]{bodies.size() + ""});
             csvWriterAppender.writeNext(new String[]{});
             for (CelestialBody body : bodies) {
-                csvWriterAppender.writeNext(new String[]{body.getPosition().getX() + "", body.getPosition().getY() + ""});
+                csvWriterAppender.writeNext(new String[]{body.getRadius() + "", body.getPosition().getX() + "", body.getPosition().getY() + ""});
             }
         } catch (Exception e) {
             e.printStackTrace(); //TODO: handle exception
