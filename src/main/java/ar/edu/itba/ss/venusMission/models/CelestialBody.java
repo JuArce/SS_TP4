@@ -23,7 +23,7 @@ public class CelestialBody implements Movable, Force {
     @Getter
     private final Pair acceleration;
 
-    private static final double G = 6.694 * Math.pow(10, -20); //kilometers
+    private static final double G = 6.693 * Math.pow(10, -20); //kilometers
 
     public CelestialBody(String name, double mass, double radius, Point position, Pair velocity, Pair acceleration) {
         this.name = name;
@@ -36,6 +36,10 @@ public class CelestialBody implements Movable, Force {
 
     public double distanceTo(CelestialBody other) {
         return this.position.distanceTo(other.position) - this.radius - other.radius;
+    }
+
+    public double distanceToCenters(CelestialBody other) {
+        return this.position.distanceTo(other.position);
     }
 
     public void setPosition(double x, double y) {
@@ -60,7 +64,7 @@ public class CelestialBody implements Movable, Force {
 
     @Override
     public Pair apply(Force other) {
-        final double distance = this.distanceTo((CelestialBody) other);
+        final double distance = this.distanceToCenters((CelestialBody) other);
         final double gForce = G * this.mass * other.getMass() / Math.pow(distance, 2);
 
         final double enX = (other.getPosition().getX() - this.position.getX()) / distance;

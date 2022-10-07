@@ -10,8 +10,8 @@ public class VenusMission {
 
         final Exporter exporter = new OvitoExporter("venusMission.txt");
         exporter.open();
-        final double dt = 3600;
-        final double tf = 365.25 * 24 * 3600 * 1; //1.944e+7
+        final double dt = 300;
+        final double tf = 365.25 * 24 * 3600 * 2; //1.944e+7
         final SolarSystem solarSystem = new SolarSystem(exporter, dt, tf);
 
         solarSystem.run();

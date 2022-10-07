@@ -73,7 +73,6 @@ public class GearPredictorCorrector implements Algorithm {
     public void run(List<CelestialBody> objects, double dt) {
         // Predict each object
         for (int i = 0; i < objects.size(); i++) {
-            if (objects.get(i).getName().equals("Sun")) continue;
             final Pair r0 = this.r0.get(i);
             final Pair r1 = this.r1.get(i);
             final Pair r2 = this.r2.get(i);
@@ -92,10 +91,6 @@ public class GearPredictorCorrector implements Algorithm {
         // Evaluate
         // for each object calculate dRP2
         for (int i = 0; i < objects.size(); i++) {
-            if (objects.get(i).getName().equals("Sun")) {
-                this.dR2.add(new Pair(0, 0));
-                continue;
-            }
             final CelestialBody o = objects.get(i);
             final List<Force> others = objects.stream().filter(m -> !m.equals(o)).collect(Collectors.toList());
             final Pair totalForce = o.apply(others);
@@ -108,7 +103,6 @@ public class GearPredictorCorrector implements Algorithm {
 
         // Correct each object
         for (int i = 0; i < objects.size(); i++) {
-            if (objects.get(i).getName().equals("Sun")) continue;
             final Pair rp0 = this.rp0.get(i);
             final Pair rp1 = this.rp1.get(i);
             final Pair rp2 = this.rp2.get(i);
@@ -120,7 +114,6 @@ public class GearPredictorCorrector implements Algorithm {
 
         // Update each object for the algorithm and the model itself
         for (int i = 0; i < objects.size(); i++) {
-            if (objects.get(i).getName().equals("Sun")) continue;
             final CelestialBody o = objects.get(i);
             final Pair rp0 = this.rp0.get(i);
             final Pair rp1 = this.rp1.get(i);

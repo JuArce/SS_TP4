@@ -12,7 +12,7 @@ public class SolarSystem {
     private final CelestialBody sun;
     private final CelestialBody venus;
     private final CelestialBody earth;
-//    private final CelestialBody spaceship;
+    private final CelestialBody spaceship;
     private double t = 0;
     private final double dt;
     private final double tf;
@@ -47,6 +47,15 @@ public class SolarSystem {
                 .acceleration(new Pair(0, 0))
                 .build();
 
+        this.spaceship = new CelestialBody.Builder()
+                .name("Spaceship")
+                .mass(2 * Math.pow(10, 5))
+                .radius(0)
+//                .position(new Point())
+//                .velocity(new Pair())
+//                .acceleration(new Pair())
+                .build();
+
         /**
          * Set all accelerations
          */
@@ -63,9 +72,12 @@ public class SolarSystem {
     }
 
     public void run() {
+        int i = 0;
         this.t = 0;
         while (this.t < this.tf) {
-            exporter.export(this.bodies);
+            if (i++ % 100 == 0) {
+                this.exporter.export(this.bodies);
+            }
             this.t += this.dt;
             algorithm.run(this.bodies, this.dt);
         }
