@@ -51,11 +51,16 @@ public class SolarSystem {
          * Spaceship initial position and velocity
          */
         final double alpha = Math.atan(earth.getPosition().getY() / earth.getPosition().getX());
+        System.out.println("alpha = " + alpha);
         final double x = this.earth.getPosition().getX() - (this.earth.getRadius() + 1500) * Math.cos(alpha);
         final double y = this.earth.getPosition().getY() - (this.earth.getRadius() + 1500) * Math.sin(alpha);
         final double v0 = 7.12 + 8;
-        final double vx = this.earth.getVelocity().getX() + v0 * Math.sin(alpha);
-        final double vy = this.earth.getVelocity().getY() - v0 * Math.cos(alpha);
+        final double ve = Math.sqrt(Math.pow(this.earth.getVelocity().getX(), 2) + Math.pow(this.earth.getVelocity().getY(), 2));
+        System.out.println("ve = " + ve);
+        final double vx = (ve - v0) * - Math.sin(alpha);
+        final double vy = (ve - v0) * Math.cos(alpha);
+        System.out.println("vx = " + vx);
+        System.out.println("vy = " + vy);
         this.spaceship = new CelestialBody.Builder()
                 .name("Spaceship")
                 .mass(2 * Math.pow(10, 5))
