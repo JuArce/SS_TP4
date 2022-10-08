@@ -105,7 +105,7 @@ public class SolarSystem {
         /**
          * Spaceship initial position and velocity
          */
-        final double alpha = Math.atan(earth.getPosition().getY() / earth.getPosition().getX());
+        final double alpha = Math.atan2(earth.getPosition().getY() - sun.getPosition().getY(), earth.getPosition().getX() - sun.getPosition().getX());
         final double x = this.earth.getPosition().getX() - (this.earth.getRadius() + 1500) * Math.cos(alpha);
         final double y = this.earth.getPosition().getY() - (this.earth.getRadius() + 1500) * Math.sin(alpha);
         final double v0 = 7.12 + 8;
