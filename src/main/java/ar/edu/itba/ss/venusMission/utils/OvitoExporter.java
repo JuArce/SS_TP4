@@ -45,7 +45,7 @@ public class OvitoExporter implements Exporter {
                 } else {
                     radius *= 10;
                 }
-                csvWriterAppender.writeNext(new String[]{radius + "", body.getPosition().getX() + "", body.getPosition().getY() + ""});
+                csvWriterAppender.writeNext(new String[]{radius + "", body.getPosition().getX() + "", body.getPosition().getY() + "", body.getVelocity().getX() + "", body.getVelocity().getY() + ""});
             }
         } catch (Exception e) {
             e.printStackTrace(); //TODO: handle exception
