@@ -52,20 +52,7 @@ public class GearPredictorCorrector implements Algorithm {
         this.rp4 = new ArrayList<>();
         this.rp5 = new ArrayList<>();
         this.dR2 = new ArrayList<>();
-        objects.forEach(object -> {
-            this.r0.add(new Pair(object.getPosition().getX(), object.getPosition().getY()));
-            this.r1.add(new Pair(object.getVelocity().getX(), object.getVelocity().getY()));
-            this.r2.add(new Pair(object.getAcceleration().getX(), object.getAcceleration().getY()));
-            this.r3.add(new Pair(0, 0));
-            this.r4.add(new Pair(0, 0));
-            this.r5.add(new Pair(0, 0));
-            this.rp0.add(new Pair(0, 0));
-            this.rp1.add(new Pair(0, 0));
-            this.rp2.add(new Pair(0, 0));
-            this.rp3.add(new Pair(0, 0));
-            this.rp4.add(new Pair(0, 0));
-            this.rp5.add(new Pair(0, 0));
-        });
+        objects.forEach(this::addObject);
 
     }
 
@@ -108,7 +95,17 @@ public class GearPredictorCorrector implements Algorithm {
         for (int i = 0; i < objects.size(); i++) {
             final CelestialBody o = objects.get(i);
             final List<Force> others = objects.stream().filter(m -> !m.equals(o)).collect(Collectors.toList());
-            final Pair totalForce = o.apply(others);
+            final List<Pair> rp0aux = new ArrayList<>();
+            Pair nextPosition = null;
+            for (int j = 0; j < objects.size(); j++) {
+                if (i != j) {
+                    rp0aux.add(this.rp0.get(j));
+                } else {
+                    nextPosition = this.rp0.get(j);
+                }
+            }
+
+            final Pair totalForce = o.calculateNextForce(nextPosition, others, rp0aux);
 
             final double ax = totalForce.getX() / o.getMass();
             final double ay = totalForce.getY() / o.getMass();
@@ -151,7 +148,7 @@ public class GearPredictorCorrector implements Algorithm {
     private void predict(double dt, Pair rp0, Pair rp1, Pair rp2, Pair rp3, Pair rp4, Pair rp5, Pair r0, Pair r1, Pair r2, Pair r3, Pair r4, Pair r5) {
         // Predict
         rp0.setX(predictRp0(dt, r0.getX(), r1.getX(), r2.getX(), r3.getX(), r4.getX(), r5.getX()));
-        rp0.setY(predictRp0(dt,r0.getY(), r1.getY(), r2.getY(), r3.getY(), r4.getY(), r5.getY()));
+        rp0.setY(predictRp0(dt, r0.getY(), r1.getY(), r2.getY(), r3.getY(), r4.getY(), r5.getY()));
 
         rp1.setX(predictRp1(dt, r1.getX(), r2.getX(), r3.getX(), r4.getX(), r5.getX()));
         rp1.setY(predictRp1(dt, r1.getY(), r2.getY(), r3.getY(), r4.getY(), r5.getY()));
@@ -204,7 +201,8 @@ public class GearPredictorCorrector implements Algorithm {
         r.setX(rp.getX());
         r.setY(rp.getY());
     }
-      private void update(CelestialBody o, Pair r0, Pair r1, Pair r2) {
+
+    private void update(CelestialBody o, Pair r0, Pair r1, Pair r2) {
         o.setPosition(r0.getX(), r0.getY());
         o.setVelocity(r1.getX(), r1.getY());
         o.setAcceleration(r2.getX(), r2.getY());

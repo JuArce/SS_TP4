@@ -66,9 +66,9 @@ public class SolarSystem {
         /**
          * Set all accelerations
          */
-        final Pair venusForce = this.venus.apply(List.of(sun, earth));
+        final Pair venusForce = this.venus.calculateForce(List.of(sun, earth));
         this.venus.setAcceleration(venusForce.getX() / this.venus.getMass(), venusForce.getY() / this.venus.getMass());
-        final Pair earthForce = this.earth.apply(List.of(sun, venus));
+        final Pair earthForce = this.earth.calculateForce(List.of(sun, venus));
         this.earth.setAcceleration(earthForce.getX() / this.earth.getMass(), earthForce.getY() / this.earth.getMass());
 
         this.exporter = exporter;
@@ -114,8 +114,8 @@ public class SolarSystem {
         final double vy = (ve - v0) * Math.cos(alpha);
 
 //        System.out.println("ve = " + ve);
-//        System.out.println("vx = " + vx);
-//        System.out.println("vy = " + vy);
+        System.out.println("vx = " + vx);
+        System.out.println("vy = " + vy);
 
         this.spaceship = new CelestialBody.Builder()
                 .name("Spaceship")
@@ -126,7 +126,7 @@ public class SolarSystem {
                 .acceleration(new Pair(0, 0))
                 .build();
 
-        final Pair spaceshipForce = this.spaceship.apply(List.of(sun, venus, earth));
+        final Pair spaceshipForce = this.spaceship.calculateForce(List.of(sun, venus, earth));
         this.spaceship.setAcceleration(spaceshipForce.getX() / this.spaceship.getMass(), spaceshipForce.getY() / this.spaceship.getMass());
 
         this.bodies.add(this.spaceship);

@@ -19,6 +19,10 @@ public class Pair {
         return new Pair(this.x + other.x, this.y + other.y);
     }
 
+    public double distanceTo(Pair other) {
+        return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
+    }
+
     @Override
     public String toString() {
         return "x: " + x + ", y: " + y;

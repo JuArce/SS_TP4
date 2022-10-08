@@ -63,12 +63,31 @@ public class CelestialBody implements Movable, Force {
     }
 
     @Override
-    public Pair apply(Force other) {
+    public Pair calculateForce(Force other) {
         final double distance = this.distanceToCenters((CelestialBody) other);
         final double gForce = G * this.mass * other.getMass() / Math.pow(distance, 2);
 
-        final double enX = (other.getPosition().getX() - this.position.getX()) / distance;
-        final double enY = (other.getPosition().getY() - this.position.getY()) / distance;
+        final double enX = (other.getPosition().getX() - this.getPosition().getX()) / distance;
+        final double enY = (other.getPosition().getY() - this.getPosition().getY()) / distance;
+
+        final double fx = gForce * enX;
+        final double fy = gForce * enY;
+
+        return new Pair(fx, fy);
+    }
+
+    @Override
+    public Pair calculateForce(List<Force> others) {
+        return others.stream().map(this::calculateForce).reduce(Pair::sum).orElse(new Pair(0, 0));
+    }
+
+    @Override
+    public Pair calculateNextForce(Pair nextPosition, Force other, Pair otherNextPosition) {
+        final double distance = nextPosition.distanceTo(otherNextPosition);
+        final double gForce = G * this.mass * other.getMass() / Math.pow(distance, 2);
+
+        final double enX = (otherNextPosition.getX() - nextPosition.getX()) / distance;
+        final double enY = (otherNextPosition.getY() - nextPosition.getY()) / distance;
 
         final double fx = gForce * enX;
         final double fy = gForce * enY;
@@ -78,8 +97,12 @@ public class CelestialBody implements Movable, Force {
     }
 
     @Override
-    public Pair apply(List<Force> others) {
-        return others.stream().map(this::apply).reduce(Pair::sum).orElse(new Pair(0, 0));
+    public Pair calculateNextForce(Pair nextPosition, List<Force> others, List<Pair> otherNextPositions) {
+        Pair sum = new Pair(0, 0);
+        for (int i = 0; i < others.size(); i++) {
+            sum = sum.sum(calculateNextForce(nextPosition, others.get(i), otherNextPositions.get(i)));
+        }
+        return sum;
     }
 
     @Override
