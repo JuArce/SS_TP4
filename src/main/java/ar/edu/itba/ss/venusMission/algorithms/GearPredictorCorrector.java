@@ -69,6 +69,21 @@ public class GearPredictorCorrector implements Algorithm {
 
     }
 
+    public void addObject(CelestialBody object) {
+        this.r0.add(new Pair(object.getPosition().getX(), object.getPosition().getY()));
+        this.r1.add(new Pair(object.getVelocity().getX(), object.getVelocity().getY()));
+        this.r2.add(new Pair(object.getAcceleration().getX(), object.getAcceleration().getY()));
+        this.r3.add(new Pair(0, 0));
+        this.r4.add(new Pair(0, 0));
+        this.r5.add(new Pair(0, 0));
+        this.rp0.add(new Pair(0, 0));
+        this.rp1.add(new Pair(0, 0));
+        this.rp2.add(new Pair(0, 0));
+        this.rp3.add(new Pair(0, 0));
+        this.rp4.add(new Pair(0, 0));
+        this.rp5.add(new Pair(0, 0));
+    }
+
     @Override
     public void run(List<CelestialBody> objects, double dt) {
         // Predict each object

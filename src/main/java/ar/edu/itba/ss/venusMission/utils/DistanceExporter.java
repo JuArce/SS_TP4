@@ -7,26 +7,31 @@ import com.opencsv.CSVWriter;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
-public class OvitoExporter implements Exporter {
+public class DistanceExporter implements Exporter {
 
-    private static final String baseFilename = "src/main/resources/venusMission/output/ovito/";
+    private static final String baseFilename = "src/main/resources/venusMission/output/";
 
     private final String filename;
+    private LocalDate date;
     private CSVWriter csvWriterAppender;
 
-    public OvitoExporter(String filename) {
+
+    public DistanceExporter(String filename, LocalDate date) {
         this.filename = filename;
+        this.date = date;
     }
 
     @Override
     public void open() {
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(baseFilename + filename));
+            writer.writeNext(new String[]{"Date", "Distance"});
             writer.close();
 
-            this.csvWriterAppender = new CSVWriter(new FileWriter(baseFilename + filename, true), ' ', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
+            this.csvWriterAppender = new CSVWriter(new FileWriter(baseFilename + filename, true), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -34,19 +39,10 @@ public class OvitoExporter implements Exporter {
 
     @Override
     public void export(SolarSystem solarSystem) {
-        List<CelestialBody> bodies = solarSystem.getBodies();
         try {
-            csvWriterAppender.writeNext(new String[]{bodies.size() + ""});
-            csvWriterAppender.writeNext(new String[]{});
-            for (CelestialBody body : bodies) {
-                double radius = body.getRadius();
-                if (body.getName().equals("Venus") || body.getName().equals("Earth")) {
-                    radius *= 500;
-                } else {
-                    radius *= 10;
-                }
-                csvWriterAppender.writeNext(new String[]{radius + "", body.getPosition().getX() + "", body.getPosition().getY() + ""});
-            }
+            final double distance = solarSystem.getSpaceshipDistances().stream().min(Double::compareTo).get();
+            csvWriterAppender.writeNext(new String[]{date.toString(), distance + ""});
+            this.date = this.date.plusDays(1);
         } catch (Exception e) {
             e.printStackTrace(); //TODO: handle exception
         }
