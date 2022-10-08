@@ -7,24 +7,21 @@ import ar.edu.itba.ss.venusMission.utils.OvitoExporter;
 
 import java.time.LocalDate;
 
-import static java.time.temporal.ChronoUnit.DAYS;
-
-public class VenusMission {
+public class VenusMissionDifferentDays {
     public static void main(String[] args) {
 
         int days = 365;
-        final LocalDate initialDate = LocalDate.of(2022, 9, 22);
-        final Exporter distanceExporter = new DistanceExporter("distance.csv", initialDate);
+        final LocalDate initialDate = LocalDate.of(2022, 9, 23);
+        final Exporter distanceExporter = new DistanceExporter("___distance.csv", initialDate);
         distanceExporter.open();
 
         for (int i = 0; i < days; i++) {
+            System.out.println("******************************");
             long startTime = System.currentTimeMillis();
 
-//            final LocalDate launchDate = LocalDate.of(2023, 5, 2);
-//            final int spaceshipLaunchDay = (int) DAYS.between(initialDate, launchDate);
             final LocalDate launchDate = initialDate.plusDays(i);
 
-            final Exporter exporter = new OvitoExporter("venusMission_" + launchDate + ".txt");
+            final Exporter exporter = new OvitoExporter("___venusMission_" + launchDate + ".txt");
             exporter.open();
 
             final double dt = 300;
@@ -39,6 +36,7 @@ public class VenusMission {
 
             long endTime = System.currentTimeMillis();
             System.out.println("That took " + (endTime - startTime) + " milliseconds");
+            System.out.println("******************************");
         }
         distanceExporter.close();
     }
