@@ -34,6 +34,10 @@ public class SolarSystem {
     private final List<Double> spaceshipDistances;
 
     public SolarSystem(Exporter exporter, Exporter distanceExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay) {
+        this(exporter, distanceExporter, dt, tf, initialDate, spaceshipLaunchDay, 0);
+    }
+
+    public SolarSystem(Exporter exporter, Exporter distanceExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay, int minutesOffset) {
         this.sun = new CelestialBody.Builder()
                 .name("Sun")
                 .mass(1988500 * Math.pow(10, 24))
@@ -76,7 +80,7 @@ public class SolarSystem {
         this.dt = dt;
         this.tf = tf;
         this.initialDate = initialDate;
-        this.spaceshipLaunchOffset = spaceshipLaunchDay * 24 * 3600;
+        this.spaceshipLaunchOffset = spaceshipLaunchDay * 24 * 3600 + minutesOffset * 60;
         this.bodies = new ArrayList<>(List.of(sun, venus, earth));
         this.algorithm = new GearPredictorCorrector(this.bodies);
         this.spaceshipDistances = new ArrayList<>();
@@ -131,6 +135,6 @@ public class SolarSystem {
 
         this.bodies.add(this.spaceship);
         this.algorithm.addObject(this.spaceship);
-        System.out.println("Spaceship launched on " + this.initialDate.plusDays((int) spaceshipLaunchOffset / 3600 / 24));
+        System.out.println("Spaceship launched on " + this.initialDate.atStartOfDay().plusMinutes((int) spaceshipLaunchOffset / 60));
     }
 }

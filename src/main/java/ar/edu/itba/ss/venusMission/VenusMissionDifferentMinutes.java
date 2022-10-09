@@ -7,27 +7,36 @@ import ar.edu.itba.ss.venusMission.utils.OvitoExporter;
 
 import java.time.LocalDate;
 
-public class VenusMissionDifferentDays {
+import static java.time.temporal.ChronoUnit.DAYS;
+
+
+public class VenusMissionDifferentMinutes {
+
     public static void main(String[] args) {
 
-        int days = 365;
+
         final LocalDate initialDate = LocalDate.of(2022, 9, 23);
-        final Exporter distanceExporter = new DistanceExporter("distance.csv", initialDate);
+        final LocalDate launchDate = LocalDate.of(2023, 5, 8);
+        final int minutesOffset = 10;
+        final int days = 1;
+
+        final Exporter distanceExporter = new DistanceExporter("distance_" + launchDate + "_offset_" + minutesOffset + "_min" + ".csv", launchDate, minutesOffset);
         distanceExporter.open();
 
-        for (int i = 0; i < days; i++) {
+        for (int i = 0; i < days * 24 * 60 / minutesOffset; i++) {
             System.out.println("******************************");
             long startTime = System.currentTimeMillis();
 
-            final LocalDate launchDate = initialDate.plusDays(i);
+            final String fileName = "venusMission_" + launchDate.atStartOfDay().plusMinutes(minutesOffset * i) + ".txt";
 
-            final Exporter exporter = new OvitoExporter("venusMission_" + launchDate + ".txt");
+            System.out.println(fileName);
+            final Exporter exporter = new OvitoExporter(fileName.replaceAll(":", "-"));
             exporter.open();
 
             final double dt = 300;
             final double tf = 365.25 * 24 * 3600; //1.944e+7
 
-            final SolarSystem solarSystem = new SolarSystem(exporter, distanceExporter, dt, tf, initialDate, i);
+            final SolarSystem solarSystem = new SolarSystem(exporter, distanceExporter, dt, tf, initialDate, (int) DAYS.between(initialDate, launchDate), minutesOffset * i);
 
             solarSystem.run();
 

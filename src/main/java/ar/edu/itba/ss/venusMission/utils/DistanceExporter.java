@@ -8,6 +8,7 @@ import com.opencsv.CSVWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class DistanceExporter implements Exporter {
@@ -15,13 +16,21 @@ public class DistanceExporter implements Exporter {
     private static final String baseFilename = "src/main/resources/venusMission/output/";
 
     private final String filename;
-    private LocalDate date;
+    private LocalDateTime date;
+    private final int minutesOffset;
     private CSVWriter csvWriterAppender;
 
 
     public DistanceExporter(String filename, LocalDate date) {
         this.filename = filename;
-        this.date = date;
+        this.date = date.atStartOfDay();
+        this.minutesOffset = 24 * 60;
+    }
+
+    public DistanceExporter(String filename, LocalDate date, int minutesOffset) {
+        this.filename = filename;
+        this.date = date.atStartOfDay();
+        this.minutesOffset = minutesOffset;
     }
 
     @Override
@@ -42,7 +51,7 @@ public class DistanceExporter implements Exporter {
         try {
             final double distance = solarSystem.getSpaceshipDistances().stream().min(Double::compareTo).get();
             csvWriterAppender.writeNext(new String[]{date.toString(), distance + ""});
-            this.date = this.date.plusDays(1);
+            this.date = this.date.plusMinutes(minutesOffset);
         } catch (Exception e) {
             e.printStackTrace(); //TODO: handle exception
         }

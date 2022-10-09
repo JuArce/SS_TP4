@@ -15,7 +15,7 @@ public class VenusMissionInSpecificDay {
         long startTime = System.currentTimeMillis();
 
         final LocalDate initialDate = LocalDate.of(2022, 9, 23);
-        final LocalDate launchDate = LocalDate.of(2023, 4, 28);
+        final LocalDate launchDate = LocalDate.of(2023, 5, 9);
 
         final Exporter distanceExporter = new DistanceExporter("distance_" + launchDate + ".csv", launchDate);
         distanceExporter.open();
@@ -25,9 +25,9 @@ public class VenusMissionInSpecificDay {
         final int spaceshipLaunchDay = (int) DAYS.between(initialDate, launchDate);
 
         final double dt = 300;
-        final double tf = 365.25 * 24 * 3600 * 2;
+        final double tf = 365.25 * 24 * 3600;
 
-        final SolarSystem solarSystem = new SolarSystem(ovitoExporter, distanceExporter, dt, tf, initialDate, spaceshipLaunchDay);
+        final SolarSystem solarSystem = new SolarSystem(ovitoExporter, distanceExporter, dt, tf, initialDate, spaceshipLaunchDay, 0);
 
         solarSystem.run();
 
