@@ -27,7 +27,7 @@ public class VenusMissionDifferentDays {
             final double dt = 300;
             final double tf = 365.25 * 24 * 3600; //1.944e+7
 
-            final SolarSystem solarSystem = new SolarSystem(exporter, distanceExporter, dt, tf, initialDate, i);
+            final SolarSystem solarSystem = new SolarSystem(exporter, distanceExporter, null, dt, tf, initialDate, i);
 
             solarSystem.run();
 

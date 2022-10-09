@@ -16,8 +16,10 @@ public class SolarSystem {
     private final CelestialBody sun;
     private final CelestialBody venus;
     private final CelestialBody earth;
+    @Getter
     private CelestialBody spaceship;
 
+    @Getter
     private double t = 0;
     private final double dt;
     private final double tf;
@@ -25,19 +27,20 @@ public class SolarSystem {
     private final LocalDate initialDate;
     private final double spaceshipLaunchOffset;
 
-    private final Exporter exporter;
+    private final Exporter ovitoExporter;
     private final Exporter distanceExporter;
+    private final Exporter velocityExporter;
 
     private final GearPredictorCorrector algorithm;
 
     @Getter
     private final List<Double> spaceshipDistances;
 
-    public SolarSystem(Exporter exporter, Exporter distanceExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay) {
-        this(exporter, distanceExporter, dt, tf, initialDate, spaceshipLaunchDay, 0);
+    public SolarSystem(Exporter ovitoExporter, Exporter distanceExporter, Exporter velocityExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay) {
+        this(ovitoExporter, distanceExporter, velocityExporter, dt, tf, initialDate, spaceshipLaunchDay, 0);
     }
 
-    public SolarSystem(Exporter exporter, Exporter distanceExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay, int minutesOffset) {
+    public SolarSystem(Exporter ovitoExporter, Exporter distanceExporter, Exporter velocityExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay, int minutesOffset) {
         this.sun = new CelestialBody.Builder()
                 .name("Sun")
                 .mass(1988500 * Math.pow(10, 24))
@@ -75,12 +78,16 @@ public class SolarSystem {
         final Pair earthForce = this.earth.calculateForce(List.of(sun, venus));
         this.earth.setAcceleration(earthForce.getX() / this.earth.getMass(), earthForce.getY() / this.earth.getMass());
 
-        this.exporter = exporter;
+        this.ovitoExporter = ovitoExporter;
         this.distanceExporter = distanceExporter;
+        this.velocityExporter = velocityExporter;
+
         this.dt = dt;
         this.tf = tf;
+
         this.initialDate = initialDate;
         this.spaceshipLaunchOffset = spaceshipLaunchDay * 24 * 3600 + minutesOffset * 60;
+
         this.bodies = new ArrayList<>(List.of(sun, venus, earth));
         this.algorithm = new GearPredictorCorrector(this.bodies);
         this.spaceshipDistances = new ArrayList<>();
@@ -93,13 +100,24 @@ public class SolarSystem {
             if (Double.compare(this.t, this.spaceshipLaunchOffset) == 0) {
                 launchSpaceship();
             }
-            if (i++ % 100 == 0) {
-                this.exporter.export(this);
+            if (i % 100 == 0) {
+                this.ovitoExporter.export(this);
             }
             if (this.spaceship != null) {
-                spaceshipDistances.add(this.spaceship.getPosition().distanceTo(this.venus.getPosition()));
+                final double distance = this.spaceship.distanceToCenters(this.venus);
+                spaceshipDistances.add(distance);
+                if (this.velocityExporter != null && i % 100 == 0) {
+                    this.velocityExporter.export(this);
+                }
+                if (distance < this.venus.getRadius()) {
+                    System.out.println("Travel days: " + (this.t - this.spaceshipLaunchOffset) / 3600 / 24);
+                    System.out.println("Relative velocity: " + this.spaceship.getVelocity().distanceTo(this.venus.getVelocity()));
+                    System.out.println("Spaceship crashed!");
+                    break;
+                }
             }
             this.t += this.dt;
+            i++;
             algorithm.run(this.bodies, this.dt);
         }
         this.distanceExporter.export(this);

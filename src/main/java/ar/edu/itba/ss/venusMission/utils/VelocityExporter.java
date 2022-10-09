@@ -9,33 +9,24 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class DistanceExporter implements Exporter {
+public class VelocityExporter implements Exporter {
 
-    private static final String baseFilename = "src/main/resources/venusMission/output/";
+    private static final String baseFilename = "src/main/resources/venusMission/output/velocity/";
 
     private final String filename;
-    private LocalDateTime date;
-    private final int minutesOffset;
+    private final LocalDateTime date;
     private CSVWriter csvWriterAppender;
 
-
-    public DistanceExporter(String filename, LocalDate date) {
+    public VelocityExporter(String filename, LocalDateTime date) {
         this.filename = filename;
-        this.date = date.atStartOfDay();
-        this.minutesOffset = 24 * 60;
-    }
-
-    public DistanceExporter(String filename, LocalDate date, int minutesOffset) {
-        this.filename = filename;
-        this.date = date.atStartOfDay();
-        this.minutesOffset = minutesOffset;
+        this.date = date;
     }
 
     @Override
     public void open() {
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(baseFilename + filename));
-            writer.writeNext(new String[]{"Date", "Distance"});
+            writer.writeNext(new String[]{"Date", "Velocity"});
             writer.close();
 
             this.csvWriterAppender = new CSVWriter(new FileWriter(baseFilename + filename, true), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
@@ -47,9 +38,10 @@ public class DistanceExporter implements Exporter {
     @Override
     public void export(SolarSystem solarSystem) {
         try {
-            final double distance = solarSystem.getSpaceshipDistances().stream().min(Double::compareTo).get();
-            csvWriterAppender.writeNext(new String[]{date.toString(), distance + ""});
-            this.date = this.date.plusMinutes(minutesOffset);
+            final LocalDateTime date = this.date.plusSeconds((long) solarSystem.getT());
+            final Pair velocity = solarSystem.getSpaceship().getVelocity();
+            final double velocityModule = Math.sqrt(Math.pow(velocity.getX(), 2) + Math.pow(velocity.getY(), 2));
+            csvWriterAppender.writeNext(new String[]{date.toString(), velocityModule + ""});
         } catch (Exception e) {
             e.printStackTrace(); //TODO: handle exception
         }
