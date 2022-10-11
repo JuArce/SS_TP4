@@ -1,7 +1,9 @@
 package ar.edu.itba.ss.venusMission;
 
 import ar.edu.itba.ss.venusMission.interfaces.Exporter;
+import ar.edu.itba.ss.venusMission.models.CelestialBody;
 import ar.edu.itba.ss.venusMission.models.SolarSystem;
+import ar.edu.itba.ss.venusMission.utils.CelestialBodyFactory;
 import ar.edu.itba.ss.venusMission.utils.DistanceExporter;
 import ar.edu.itba.ss.venusMission.utils.OvitoExporter;
 import ar.edu.itba.ss.venusMission.utils.VelocityExporter;
@@ -23,6 +25,9 @@ public class VenusMissionInSpecificDay {
         final LocalDateTime launchDate = LocalDateTime.of(2023, 5, 8, 21, 10, 0);
         final int minutesOffset = launchDate.getHour() * 60 + launchDate.getMinute();
 
+        final CelestialBody earth = CelestialBodyFactory.getEarth();
+        final CelestialBody venus = CelestialBodyFactory.getVenus();
+
         final String distanceFilename = "distance_" + launchDate + ".csv";
         final Exporter distanceExporter = new DistanceExporter(distanceFilename.replaceAll(":", "-"), launchDate.toLocalDate());
         distanceExporter.open();
@@ -37,7 +42,7 @@ public class VenusMissionInSpecificDay {
 
         final int spaceshipLaunchDay = (int) DAYS.between(initialDate, launchDate);
 
-        final SolarSystem solarSystem = new SolarSystem(ovitoExporter, distanceExporter, velocityExporter, dt, tf, initialDate, spaceshipLaunchDay, minutesOffset);
+        final SolarSystem solarSystem = new SolarSystem(earth, venus, ovitoExporter, distanceExporter, velocityExporter, dt, tf, initialDate, spaceshipLaunchDay, minutesOffset);
 
         solarSystem.run();
 

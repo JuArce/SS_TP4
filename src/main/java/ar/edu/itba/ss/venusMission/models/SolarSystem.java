@@ -2,6 +2,7 @@ package ar.edu.itba.ss.venusMission.models;
 
 import ar.edu.itba.ss.venusMission.algorithms.GearPredictorCorrector;
 import ar.edu.itba.ss.venusMission.interfaces.Exporter;
+import ar.edu.itba.ss.venusMission.utils.CelestialBodyFactory;
 import ar.edu.itba.ss.venusMission.utils.Pair;
 import lombok.Getter;
 
@@ -14,8 +15,8 @@ public class SolarSystem {
     @Getter
     private final List<CelestialBody> bodies;
     private final CelestialBody sun;
-    private final CelestialBody venus;
-    private final CelestialBody earth;
+    private final CelestialBody departure;
+    private final CelestialBody target;
     @Getter
     private CelestialBody spaceship;
 
@@ -36,47 +37,22 @@ public class SolarSystem {
     @Getter
     private final List<Double> spaceshipDistances;
 
-    public SolarSystem(Exporter ovitoExporter, Exporter distanceExporter, Exporter velocityExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay) {
-        this(ovitoExporter, distanceExporter, velocityExporter, dt, tf, initialDate, spaceshipLaunchDay, 0);
+    public SolarSystem(CelestialBody departure, CelestialBody target, Exporter ovitoExporter, Exporter distanceExporter, Exporter velocityExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay) {
+        this(departure, target, ovitoExporter, distanceExporter, velocityExporter, dt, tf, initialDate, spaceshipLaunchDay, 0);
     }
 
-    public SolarSystem(Exporter ovitoExporter, Exporter distanceExporter, Exporter velocityExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay, int minutesOffset) {
-        this.sun = new CelestialBody.Builder()
-                .name("Sun")
-                .mass(1988500 * Math.pow(10, 24))
-                .radius(695700)
-                .position(new Point(0, 0))
-                .velocity(new Pair(0, 0))
-                .acceleration(new Pair(0, 0))
-                .build();
-
-        this.venus = new CelestialBody.Builder()
-                .name("Venus")
-                .mass(48.685 * Math.pow(10, 23))
-                .radius(6051.84)
-                .position(new Point(-1.014319519875520 * Math.pow(10, 8), 3.525562675248842 * Math.pow(10, 7)))
-                .velocity(new Pair(-1.166353075744313 * 10, -3.324015683726970 * 10))
-                .acceleration(new Pair(0, 0))
-                .build();
-
-        this.earth = new CelestialBody.Builder()
-                .name("Earth")
-                .mass(5.97219 * Math.pow(10, 24))
-                .radius(6371)
-                .position(new Point(1.501409394622880 * Math.pow(10, 8), -9.238096308876731 * Math.pow(10, 5)))
-                .velocity(new Pair(-2.949925999285836 * Math.pow(10, -1), 2.968579130065282 * Math.pow(10, 1)))
-                .acceleration(new Pair(0, 0))
-                .build();
-
-
+    public SolarSystem(CelestialBody departure, CelestialBody target, Exporter ovitoExporter, Exporter distanceExporter, Exporter velocityExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay, int minutesOffset) {
+        this.sun = CelestialBodyFactory.getSun();
+        this.departure = departure;
+        this.target = target;
 
         /**
          * Set all accelerations
          */
-        final Pair venusForce = this.venus.calculateForce(List.of(sun, earth));
-        this.venus.setAcceleration(venusForce.getX() / this.venus.getMass(), venusForce.getY() / this.venus.getMass());
-        final Pair earthForce = this.earth.calculateForce(List.of(sun, venus));
-        this.earth.setAcceleration(earthForce.getX() / this.earth.getMass(), earthForce.getY() / this.earth.getMass());
+        final Pair targetForce = this.target.calculateForce(List.of(sun, departure));
+        this.target.setAcceleration(targetForce.getX() / this.target.getMass(), targetForce.getY() / this.target.getMass());
+        final Pair departureForce = this.departure.calculateForce(List.of(sun, target));
+        this.departure.setAcceleration(departureForce.getX() / this.departure.getMass(), departureForce.getY() / this.departure.getMass());
 
         this.ovitoExporter = ovitoExporter;
         this.distanceExporter = distanceExporter;
@@ -88,7 +64,7 @@ public class SolarSystem {
         this.initialDate = initialDate;
         this.spaceshipLaunchOffset = spaceshipLaunchDay * 24 * 3600 + minutesOffset * 60;
 
-        this.bodies = new ArrayList<>(List.of(sun, venus, earth));
+        this.bodies = new ArrayList<>(List.of(sun, target, departure));
         this.algorithm = new GearPredictorCorrector(this.bodies);
         this.spaceshipDistances = new ArrayList<>();
     }
@@ -104,14 +80,14 @@ public class SolarSystem {
                 this.ovitoExporter.export(this);
             }
             if (this.spaceship != null) {
-                final double distance = this.spaceship.distanceToCenters(this.venus);
+                final double distance = this.spaceship.distanceToCenters(this.target);
                 spaceshipDistances.add(distance);
                 if (this.velocityExporter != null && i % 100 == 0) {
                     this.velocityExporter.export(this);
                 }
-                if (distance < this.venus.getRadius()) {
+                if (distance < this.target.getRadius()) {
                     System.out.println("Travel days: " + (this.t - this.spaceshipLaunchOffset) / 3600 / 24);
-                    System.out.println("Relative velocity: " + this.spaceship.getVelocity().distanceTo(this.venus.getVelocity()));
+                    System.out.println("Relative velocity: " + this.spaceship.getVelocity().distanceTo(this.target.getVelocity()));
                     System.out.println("Spaceship crashed!");
                     break;
                 }
@@ -127,11 +103,11 @@ public class SolarSystem {
         /**
          * Spaceship initial position and velocity
          */
-        final double alpha = Math.atan2(earth.getPosition().getY() - sun.getPosition().getY(), earth.getPosition().getX() - sun.getPosition().getX());
-        final double x = this.earth.getPosition().getX() - (this.earth.getRadius() + 1500) * Math.cos(alpha);
-        final double y = this.earth.getPosition().getY() - (this.earth.getRadius() + 1500) * Math.sin(alpha);
+        final double alpha = Math.atan2(departure.getPosition().getY() - sun.getPosition().getY(), departure.getPosition().getX() - sun.getPosition().getX());
+        final double x = this.departure.getPosition().getX() - (this.departure.getRadius() + 1500) * Math.cos(alpha);
+        final double y = this.departure.getPosition().getY() - (this.departure.getRadius() + 1500) * Math.sin(alpha);
         final double v0 = 7.12 + 8;
-        final double ve = Math.sqrt(Math.pow(this.earth.getVelocity().getX(), 2) + Math.pow(this.earth.getVelocity().getY(), 2));
+        final double ve = Math.sqrt(Math.pow(this.departure.getVelocity().getX(), 2) + Math.pow(this.departure.getVelocity().getY(), 2));
         final double vx = (ve - v0) * - Math.sin(alpha);
         final double vy = (ve - v0) * Math.cos(alpha);
 
@@ -148,7 +124,7 @@ public class SolarSystem {
                 .acceleration(new Pair(0, 0))
                 .build();
 
-        final Pair spaceshipForce = this.spaceship.calculateForce(List.of(sun, venus, earth));
+        final Pair spaceshipForce = this.spaceship.calculateForce(List.of(sun, target, departure));
         this.spaceship.setAcceleration(spaceshipForce.getX() / this.spaceship.getMass(), spaceshipForce.getY() / this.spaceship.getMass());
 
         this.bodies.add(this.spaceship);

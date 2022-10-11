@@ -1,7 +1,9 @@
 package ar.edu.itba.ss.venusMission;
 
 import ar.edu.itba.ss.venusMission.interfaces.Exporter;
+import ar.edu.itba.ss.venusMission.models.CelestialBody;
 import ar.edu.itba.ss.venusMission.models.SolarSystem;
+import ar.edu.itba.ss.venusMission.utils.CelestialBodyFactory;
 import ar.edu.itba.ss.venusMission.utils.DistanceExporter;
 import ar.edu.itba.ss.venusMission.utils.OvitoExporter;
 
@@ -27,8 +29,10 @@ public class VenusMissionDifferentMinutes {
             System.out.println("******************************");
             long startTime = System.currentTimeMillis();
 
-            final String fileName = "venusMission_" + launchDate.atStartOfDay().plusMinutes(minutesOffset * i) + ".txt";
+            final CelestialBody earth = CelestialBodyFactory.getEarth();
+            final CelestialBody venus = CelestialBodyFactory.getVenus();
 
+            final String fileName = "venusMission_" + launchDate.atStartOfDay().plusMinutes(minutesOffset * i) + ".txt";
             System.out.println(fileName);
             final Exporter exporter = new OvitoExporter(fileName.replaceAll(":", "-"));
             exporter.open();
@@ -36,7 +40,7 @@ public class VenusMissionDifferentMinutes {
             final double dt = 300;
             final double tf = 365.25 * 24 * 3600; //1.944e+7
 
-            final SolarSystem solarSystem = new SolarSystem(exporter, distanceExporter, null, dt, tf, initialDate, (int) DAYS.between(initialDate, launchDate), minutesOffset * i);
+            final SolarSystem solarSystem = new SolarSystem(earth, venus, exporter, distanceExporter, null, dt, tf, initialDate, (int) DAYS.between(initialDate, launchDate), minutesOffset * i);
 
             solarSystem.run();
 
