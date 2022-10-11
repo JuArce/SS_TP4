@@ -41,4 +41,15 @@ public class CelestialBodyFactory {
                 .acceleration(new Pair(0, 0))
                 .build();
     }
+
+    public static CelestialBody getMars() {
+        return new CelestialBody.Builder()
+                .name("Mars")
+                .mass(6.4171 * Math.pow(10, 23))
+                .radius(3389.92)
+                .position(new Point(1.772575363952422 * Math.pow(10, 8), 1.201814449256149 * Math.pow(10, 8)))
+                .velocity(new Pair(-1.259022434031510 * Math.pow(10, 1), 2.216576613995795 * Math.pow(10, 1)))
+                .acceleration(new Pair(0, 0))
+                .build();
+    }
 }
