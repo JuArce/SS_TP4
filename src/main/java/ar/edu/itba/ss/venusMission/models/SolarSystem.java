@@ -27,6 +27,7 @@ public class SolarSystem {
 
     private final LocalDate initialDate;
     private final double spaceshipLaunchOffset;
+    private final double spaceshipVo;
 
     private final Exporter ovitoExporter;
     private final Exporter distanceExporter;
@@ -37,11 +38,11 @@ public class SolarSystem {
     @Getter
     private final List<Double> spaceshipDistances;
 
-    public SolarSystem(CelestialBody departure, CelestialBody target, Exporter ovitoExporter, Exporter distanceExporter, Exporter velocityExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay) {
-        this(departure, target, ovitoExporter, distanceExporter, velocityExporter, dt, tf, initialDate, spaceshipLaunchDay, 0);
+    public SolarSystem(CelestialBody departure, CelestialBody target, Exporter ovitoExporter, Exporter distanceExporter, Exporter velocityExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay, double spaceshipVo) {
+        this(departure, target, ovitoExporter, distanceExporter, velocityExporter, dt, tf, initialDate, spaceshipLaunchDay, 0, spaceshipVo);
     }
 
-    public SolarSystem(CelestialBody departure, CelestialBody target, Exporter ovitoExporter, Exporter distanceExporter, Exporter velocityExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay, int minutesOffset) {
+    public SolarSystem(CelestialBody departure, CelestialBody target, Exporter ovitoExporter, Exporter distanceExporter, Exporter velocityExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay, int minutesOffset, double spaceshipVo) {
         this.sun = CelestialBodyFactory.getSun();
         this.departure = departure;
         this.target = target;
@@ -63,6 +64,7 @@ public class SolarSystem {
 
         this.initialDate = initialDate;
         this.spaceshipLaunchOffset = spaceshipLaunchDay * 24 * 3600 + minutesOffset * 60;
+        this.spaceshipVo = spaceshipVo;
 
         this.bodies = new ArrayList<>(List.of(sun, target, departure));
         this.algorithm = new GearPredictorCorrector(this.bodies);
@@ -106,7 +108,7 @@ public class SolarSystem {
         final double alpha = Math.atan2(departure.getPosition().getY() - sun.getPosition().getY(), departure.getPosition().getX() - sun.getPosition().getX());
         final double x = this.departure.getPosition().getX() - (this.departure.getRadius() + 1500) * Math.cos(alpha);
         final double y = this.departure.getPosition().getY() - (this.departure.getRadius() + 1500) * Math.sin(alpha);
-        final double v0 = 7.12 + 8;
+        final double v0 = 7.12 + this.spaceshipVo;
         final double ve = Math.sqrt(Math.pow(this.departure.getVelocity().getX(), 2) + Math.pow(this.departure.getVelocity().getY(), 2));
         final double vx = (ve - v0) * - Math.sin(alpha);
         final double vy = (ve - v0) * Math.cos(alpha);
