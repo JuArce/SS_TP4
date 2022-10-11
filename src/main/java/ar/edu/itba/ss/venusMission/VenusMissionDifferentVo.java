@@ -39,7 +39,7 @@ public class VenusMissionDifferentVo {
 
             final int spaceshipLaunchDay = (int) DAYS.between(initialDate, launchDate);
 
-            final SolarSystem solarSystem = new SolarSystem(earth, venus, ovitoExporter, distanceExporter, null, dt, tf, initialDate, spaceshipLaunchDay, minutesOffset, spaceshipVo);
+            final SolarSystem solarSystem = new SolarSystem(earth, venus, dt, tf, initialDate, spaceshipLaunchDay, minutesOffset, spaceshipVo, ovitoExporter, distanceExporter, null);
 
             solarSystem.run();
 

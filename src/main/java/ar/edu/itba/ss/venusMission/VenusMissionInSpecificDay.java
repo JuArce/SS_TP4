@@ -42,7 +42,7 @@ public class VenusMissionInSpecificDay {
 
         final int spaceshipLaunchDay = (int) DAYS.between(initialDate, launchDate);
 
-        final SolarSystem solarSystem = new SolarSystem(earth, venus, ovitoExporter, distanceExporter, velocityExporter, dt, tf, initialDate, spaceshipLaunchDay, minutesOffset, 8.0);
+        final SolarSystem solarSystem = new SolarSystem(earth, venus, dt, tf, initialDate, spaceshipLaunchDay, minutesOffset, 8.0, ovitoExporter, distanceExporter, velocityExporter);
 
         solarSystem.run();
 

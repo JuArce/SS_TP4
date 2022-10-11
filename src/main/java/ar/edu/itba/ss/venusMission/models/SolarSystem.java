@@ -2,6 +2,7 @@ package ar.edu.itba.ss.venusMission.models;
 
 import ar.edu.itba.ss.venusMission.algorithms.GearPredictorCorrector;
 import ar.edu.itba.ss.venusMission.interfaces.Exporter;
+import ar.edu.itba.ss.venusMission.interfaces.SpaceshipLauncher;
 import ar.edu.itba.ss.venusMission.utils.CelestialBodyFactory;
 import ar.edu.itba.ss.venusMission.utils.Pair;
 import lombok.Getter;
@@ -14,8 +15,11 @@ public class SolarSystem {
 
     @Getter
     private final List<CelestialBody> bodies;
+    @Getter
     private final CelestialBody sun;
+    @Getter
     private final CelestialBody departure;
+    @Getter
     private final CelestialBody target;
     @Getter
     private CelestialBody spaceship;
@@ -25,27 +29,54 @@ public class SolarSystem {
     private final double dt;
     private final double tf;
 
+    private final SpaceshipLauncher launcher;
     private final LocalDate initialDate;
     private final double spaceshipLaunchOffset;
+    @Getter
     private final double spaceshipVo;
+
+    private final GearPredictorCorrector algorithm;
 
     private final Exporter ovitoExporter;
     private final Exporter distanceExporter;
     private final Exporter velocityExporter;
 
-    private final GearPredictorCorrector algorithm;
-
     @Getter
     private final List<Double> spaceshipDistances;
 
-    public SolarSystem(CelestialBody departure, CelestialBody target, Exporter ovitoExporter, Exporter distanceExporter, Exporter velocityExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay, double spaceshipVo) {
-        this(departure, target, ovitoExporter, distanceExporter, velocityExporter, dt, tf, initialDate, spaceshipLaunchDay, 0, spaceshipVo);
+    public SolarSystem(CelestialBody departure,
+                       CelestialBody target,
+                       double dt,
+                       double tf,
+                       LocalDate initialDate,
+                       int spaceshipLaunchDay,
+                       double spaceshipVo,
+                       Exporter ovitoExporter,
+                       Exporter distanceExporter,
+                       Exporter velocityExporter) {
+        this(departure, target, dt, tf, initialDate, spaceshipLaunchDay, 0, spaceshipVo, ovitoExporter, distanceExporter, velocityExporter);
     }
 
-    public SolarSystem(CelestialBody departure, CelestialBody target, Exporter ovitoExporter, Exporter distanceExporter, Exporter velocityExporter, double dt, double tf, LocalDate initialDate, int spaceshipLaunchDay, int minutesOffset, double spaceshipVo) {
+    public SolarSystem(CelestialBody departure,
+                       CelestialBody target,
+                       double dt,
+                       double tf,
+                       LocalDate initialDate,
+                       int spaceshipLaunchDay,
+                       int minutesOffset,
+                       double spaceshipVo,
+                       Exporter ovitoExporter,
+                       Exporter distanceExporter,
+                       Exporter velocityExporter) {
         this.sun = CelestialBodyFactory.getSun();
         this.departure = departure;
         this.target = target;
+
+        if (target.getName().equals("Venus")) {
+            this.launcher = new VenusLauncher(this);
+        } else {
+            this.launcher = new MarsLauncher(this);
+        }
 
         /**
          * Set all accelerations
@@ -54,10 +85,6 @@ public class SolarSystem {
         this.target.setAcceleration(targetForce.getX() / this.target.getMass(), targetForce.getY() / this.target.getMass());
         final Pair departureForce = this.departure.calculateForce(List.of(sun, target));
         this.departure.setAcceleration(departureForce.getX() / this.departure.getMass(), departureForce.getY() / this.departure.getMass());
-
-        this.ovitoExporter = ovitoExporter;
-        this.distanceExporter = distanceExporter;
-        this.velocityExporter = velocityExporter;
 
         this.dt = dt;
         this.tf = tf;
@@ -69,6 +96,10 @@ public class SolarSystem {
         this.bodies = new ArrayList<>(List.of(sun, target, departure));
         this.algorithm = new GearPredictorCorrector(this.bodies);
         this.spaceshipDistances = new ArrayList<>();
+
+        this.ovitoExporter = ovitoExporter;
+        this.distanceExporter = distanceExporter;
+        this.velocityExporter = velocityExporter;
     }
 
     public void run() {
@@ -102,32 +133,10 @@ public class SolarSystem {
     }
 
     private void launchSpaceship() {
-        /**
-         * Spaceship initial position and velocity
-         */
-        final double alpha = Math.atan2(departure.getPosition().getY() - sun.getPosition().getY(), departure.getPosition().getX() - sun.getPosition().getX());
-        final double x = this.departure.getPosition().getX() - (this.departure.getRadius() + 1500) * Math.cos(alpha);
-        final double y = this.departure.getPosition().getY() - (this.departure.getRadius() + 1500) * Math.sin(alpha);
-        final double v0 = 7.12 + this.spaceshipVo;
-        final double ve = Math.sqrt(Math.pow(this.departure.getVelocity().getX(), 2) + Math.pow(this.departure.getVelocity().getY(), 2));
-        final double vx = (ve - v0) * - Math.sin(alpha);
-        final double vy = (ve - v0) * Math.cos(alpha);
-
-//        System.out.println("ve = " + ve);
-        System.out.println("vx = " + vx);
-        System.out.println("vy = " + vy);
-
-        this.spaceship = new CelestialBody.Builder()
-                .name("Spaceship")
-                .mass(2 * Math.pow(10, 5))
-                .radius(0)
-                .position(new Point(x, y))
-                .velocity(new Pair(vx, vy))
-                .acceleration(new Pair(0, 0))
-                .build();
-
-        final Pair spaceshipForce = this.spaceship.calculateForce(List.of(sun, target, departure));
-        this.spaceship.setAcceleration(spaceshipForce.getX() / this.spaceship.getMass(), spaceshipForce.getY() / this.spaceship.getMass());
+        this.spaceship = this.launcher.launch();
+        if (this.spaceship == null) {
+            throw new IllegalStateException("Spaceship not launched! Aborting mission.");
+        }
 
         this.bodies.add(this.spaceship);
         this.algorithm.addObject(this.spaceship);
