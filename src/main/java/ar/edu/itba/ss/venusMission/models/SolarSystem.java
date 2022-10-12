@@ -129,6 +129,10 @@ public class SolarSystem {
             i++;
             algorithm.run(this.bodies, this.dt);
         }
+        if (this.spaceship == null) {
+            System.out.println("Spaceship never launched!");
+            return;
+        }
         this.distanceExporter.export(this);
     }
 
