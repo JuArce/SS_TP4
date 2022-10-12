@@ -37,7 +37,7 @@ public class VenusMissionInSpecificDay {
         ovitoExporter.open();
 
         final String velocityFilename = "velocity_" + launchDate + ".csv";
-        final Exporter velocityExporter = new VelocityExporter("output/velocity/", velocityFilename.replaceAll(":", "-"), initialDate.atStartOfDay());
+        final Exporter velocityExporter = new VelocityExporter("venusMission/output/velocity/", velocityFilename.replaceAll(":", "-"), initialDate.atStartOfDay());
         velocityExporter.open();
 
         final int spaceshipLaunchDay = (int) DAYS.between(initialDate, launchDate);

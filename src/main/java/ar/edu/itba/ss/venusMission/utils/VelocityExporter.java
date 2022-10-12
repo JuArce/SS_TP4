@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 
 public class VelocityExporter implements Exporter {
 
-    private static final String baseFilename = "src/main/resources/venusMission/";
+    private static final String baseFilename = "src/main/resources/";
 
     private final String fullPath;
     private final LocalDateTime date;
