@@ -29,15 +29,15 @@ public class VenusMissionInSpecificDay {
         final CelestialBody venus = CelestialBodyFactory.getVenus();
 
         final String distanceFilename = "distance_" + launchDate + ".csv";
-        final Exporter distanceExporter = new DistanceExporter(distanceFilename.replaceAll(":", "-"), launchDate.toLocalDate());
+        final Exporter distanceExporter = new DistanceExporter("venusMission/output/", distanceFilename.replaceAll(":", "-"), launchDate.toLocalDate());
         distanceExporter.open();
 
         final String ovitoFilename = "venusMissionSpecific_" + launchDate + ".txt";
-        final Exporter ovitoExporter = new OvitoExporter(ovitoFilename.replaceAll(":", "-"));
+        final Exporter ovitoExporter = new OvitoExporter("venusMission/output/ovito/", ovitoFilename.replaceAll(":", "-"));
         ovitoExporter.open();
 
         final String velocityFilename = "velocity_" + launchDate + ".csv";
-        final Exporter velocityExporter = new VelocityExporter(velocityFilename.replaceAll(":", "-"), initialDate.atStartOfDay());
+        final Exporter velocityExporter = new VelocityExporter("output/velocity/", velocityFilename.replaceAll(":", "-"), initialDate.atStartOfDay());
         velocityExporter.open();
 
         final int spaceshipLaunchDay = (int) DAYS.between(initialDate, launchDate);

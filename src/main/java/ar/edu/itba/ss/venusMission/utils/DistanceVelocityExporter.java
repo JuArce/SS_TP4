@@ -9,15 +9,15 @@ import java.io.IOException;
 import java.util.List;
 
 public class DistanceVelocityExporter implements Exporter {
-    private static final String baseFilename = "src/main/resources/venusMission/output/";
+    private static final String baseFilename = "src/main/resources/";
 
-    private final String filename;
+    private final String fullPath;
     private final List<Double> velocities;
     private int i;
     private CSVWriter csvWriterAppender;
 
-    public DistanceVelocityExporter(String filename, List<Double> velocities) {
-        this.filename = filename;
+    public DistanceVelocityExporter(String path, String filename, List<Double> velocities) {
+        this.fullPath = baseFilename + path + filename;
         this.velocities = velocities;
         this.i = 0;
     }
@@ -25,11 +25,11 @@ public class DistanceVelocityExporter implements Exporter {
     @Override
     public void open() {
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(baseFilename + filename));
+            CSVWriter writer = new CSVWriter(new FileWriter(fullPath));
             writer.writeNext(new String[]{"Vo", "Distance"});
             writer.close();
 
-            this.csvWriterAppender = new CSVWriter(new FileWriter(baseFilename + filename, true), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
+            this.csvWriterAppender = new CSVWriter(new FileWriter(fullPath, true), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
         } catch (IOException e) {
             e.printStackTrace();
         }

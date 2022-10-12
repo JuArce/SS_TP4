@@ -22,7 +22,7 @@ public class VenusMissionDifferentMinutes {
         final int minutesOffset = 10;
         final int days = 1;
 
-        final Exporter distanceExporter = new DistanceExporter("distance_" + launchDate + "_offset_" + minutesOffset + "_min" + ".csv", launchDate, minutesOffset);
+        final Exporter distanceExporter = new DistanceExporter("venusMission/output/", "distance_" + launchDate + "_offset_" + minutesOffset + "_min" + ".csv", launchDate, minutesOffset);
         distanceExporter.open();
 
         for (int i = 0; i < days * 24 * 60 / minutesOffset; i++) {
@@ -34,7 +34,7 @@ public class VenusMissionDifferentMinutes {
 
             final String fileName = "venusMission_" + launchDate.atStartOfDay().plusMinutes(minutesOffset * i) + ".txt";
             System.out.println(fileName);
-            final Exporter exporter = new OvitoExporter(fileName.replaceAll(":", "-"));
+            final Exporter exporter = new OvitoExporter("venusMission/output/ovito/", fileName.replaceAll(":", "-"));
             exporter.open();
 
             final double dt = 300;

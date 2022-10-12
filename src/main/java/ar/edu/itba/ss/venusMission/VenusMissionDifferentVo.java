@@ -20,7 +20,7 @@ public class VenusMissionDifferentVo {
         final int minutesOffset = launchDate.getHour() * 60 + launchDate.getMinute();
 
         final String distanceFilename = "distance_diffVo_" + launchDate + ".csv";
-        final Exporter distanceExporter = new DistanceVelocityExporter(distanceFilename.replaceAll(":", "-"), vo);
+        final Exporter distanceExporter = new DistanceVelocityExporter("venusMission/output/", distanceFilename.replaceAll(":", "-"), vo);
         distanceExporter.open();
 
         vo.forEach(spaceshipVo -> {
@@ -34,7 +34,7 @@ public class VenusMissionDifferentVo {
             final CelestialBody venus = CelestialBodyFactory.getVenus();
 
             final String ovitoFilename = "venusMissionSpecific_" + launchDate + "_vo_" + spaceshipVo + ".txt";
-            final Exporter ovitoExporter = new OvitoExporter(ovitoFilename.replaceAll(":", "-"));
+            final Exporter ovitoExporter = new OvitoExporter("venusMission/output/ovito/", ovitoFilename.replaceAll(":", "-"));
             ovitoExporter.open();
 
             final int spaceshipLaunchDay = (int) DAYS.between(initialDate, launchDate);

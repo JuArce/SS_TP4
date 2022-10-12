@@ -11,25 +11,25 @@ import java.time.LocalDateTime;
 
 public class VelocityExporter implements Exporter {
 
-    private static final String baseFilename = "src/main/resources/venusMission/output/velocity/";
+    private static final String baseFilename = "src/main/resources/venusMission/";
 
-    private final String filename;
+    private final String fullPath;
     private final LocalDateTime date;
     private CSVWriter csvWriterAppender;
 
-    public VelocityExporter(String filename, LocalDateTime date) {
-        this.filename = filename;
+    public VelocityExporter(String fullPath, String filename, LocalDateTime date) {
+        this.fullPath = baseFilename + fullPath + filename;
         this.date = date;
     }
 
     @Override
     public void open() {
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(baseFilename + filename));
+            CSVWriter writer = new CSVWriter(new FileWriter(fullPath));
             writer.writeNext(new String[]{"Date", "Velocity"});
             writer.close();
 
-            this.csvWriterAppender = new CSVWriter(new FileWriter(baseFilename + filename, true), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
+            this.csvWriterAppender = new CSVWriter(new FileWriter(fullPath, true), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
         } catch (IOException e) {
             e.printStackTrace();
         }

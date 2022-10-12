@@ -14,7 +14,7 @@ public class VenusMissionDifferentDays {
 
         int days = 365;
         final LocalDate initialDate = LocalDate.of(2022, 9, 23);
-        final Exporter distanceExporter = new DistanceExporter("distance.csv", initialDate);
+        final Exporter distanceExporter = new DistanceExporter("venusMission/output/", "distance.csv", initialDate);
         distanceExporter.open();
 
         for (int i = 0; i < days; i++) {
@@ -26,7 +26,7 @@ public class VenusMissionDifferentDays {
             final CelestialBody earth = CelestialBodyFactory.getEarth();
             final CelestialBody venus = CelestialBodyFactory.getVenus();
 
-            final Exporter exporter = new OvitoExporter("venusMission_" + launchDate + ".txt");
+            final Exporter exporter = new OvitoExporter("venusMission/output/ovito/", "venusMission_" + launchDate + ".txt");
             exporter.open();
 
             final double dt = 300;

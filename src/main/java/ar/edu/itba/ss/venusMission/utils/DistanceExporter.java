@@ -11,22 +11,20 @@ import java.time.LocalDateTime;
 
 public class DistanceExporter implements Exporter {
 
-    private static final String baseFilename = "src/main/resources/venusMission/output/";
+    private static final String baseFilename = "src/main/resources/";
 
-    private final String filename;
+    private final String fullPath;
     private LocalDateTime date;
     private final int minutesOffset;
     private CSVWriter csvWriterAppender;
 
 
-    public DistanceExporter(String filename, LocalDate date) {
-        this.filename = filename;
-        this.date = date.atStartOfDay();
-        this.minutesOffset = 24 * 60;
+    public DistanceExporter(String path, String filename, LocalDate date) {
+        this(path, filename, date, 24 * 60);
     }
 
-    public DistanceExporter(String filename, LocalDate date, int minutesOffset) {
-        this.filename = filename;
+    public DistanceExporter(String path, String filename, LocalDate date, int minutesOffset) {
+        this.fullPath = baseFilename + path + filename;
         this.date = date.atStartOfDay();
         this.minutesOffset = minutesOffset;
     }
@@ -34,11 +32,11 @@ public class DistanceExporter implements Exporter {
     @Override
     public void open() {
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(baseFilename + filename));
+            CSVWriter writer = new CSVWriter(new FileWriter(fullPath));
             writer.writeNext(new String[]{"Date", "Distance"});
             writer.close();
 
-            this.csvWriterAppender = new CSVWriter(new FileWriter(baseFilename + filename, true), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
+            this.csvWriterAppender = new CSVWriter(new FileWriter(fullPath, true), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
         } catch (IOException e) {
             e.printStackTrace();
         }

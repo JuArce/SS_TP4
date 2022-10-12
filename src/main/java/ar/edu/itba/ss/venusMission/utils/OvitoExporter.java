@@ -11,22 +11,22 @@ import java.util.List;
 
 public class OvitoExporter implements Exporter {
 
-    private static final String baseFilename = "src/main/resources/venusMission/output/ovito/";
+    private static final String baseFilename = "src/main/resources/";
 
-    private final String filename;
+    private final String fullPath;
     private CSVWriter csvWriterAppender;
 
-    public OvitoExporter(String filename) {
-        this.filename = filename;
+    public OvitoExporter(String path, String filename) {
+        this.fullPath = baseFilename + path + filename;
     }
 
     @Override
     public void open() {
         try {
-            CSVWriter writer = new CSVWriter(new FileWriter(baseFilename + filename));
+            CSVWriter writer = new CSVWriter(new FileWriter(fullPath));
             writer.close();
 
-            this.csvWriterAppender = new CSVWriter(new FileWriter(baseFilename + filename, true), ' ', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
+            this.csvWriterAppender = new CSVWriter(new FileWriter(fullPath, true), ' ', CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
         } catch (IOException e) {
             e.printStackTrace();
         }
