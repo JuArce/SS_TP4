@@ -40,7 +40,7 @@ public class OvitoExporter implements Exporter {
             csvWriterAppender.writeNext(new String[]{});
             for (CelestialBody body : bodies) {
                 double radius = body.getRadius();
-                if (body.getName().equals("Venus") || body.getName().equals("Earth")) {
+                if (body.getName().equals("Venus") || body.getName().equals("Earth") || body.getName().equals("Mars")) {
                     radius *= 500;
                 } else {
                     radius *= 10;
