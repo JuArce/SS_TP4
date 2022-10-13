@@ -28,6 +28,8 @@ public class SolarSystem {
     private double t = 0;
     private final double dt;
     private final double tf;
+    @Getter
+    private double travelTime;
 
     private final SpaceshipLauncher launcher;
     private final LocalDate initialDate;
@@ -78,8 +80,8 @@ public class SolarSystem {
             this.launcher = new MarsLauncher(this);
         }
 
-        /**
-         * Set all accelerations
+        /*
+          Set all accelerations
          */
         final Pair targetForce = this.target.calculateForce(List.of(sun, departure));
         this.target.setAcceleration(targetForce.getX() / this.target.getMass(), targetForce.getY() / this.target.getMass());
@@ -119,7 +121,8 @@ public class SolarSystem {
                     this.velocityExporter.export(this);
                 }
                 if (distance < this.target.getRadius()) {
-                    System.out.println("Travel days: " + (this.t - this.spaceshipLaunchOffset) / 3600 / 24);
+                    this.travelTime = (this.t - this.spaceshipLaunchOffset) / 3600 / 24;
+                    System.out.println("Travel days: " + this.travelTime);
                     System.out.println("Relative velocity: " + this.spaceship.getVelocity().distanceTo(this.target.getVelocity()));
                     System.out.println("Spaceship arrived to " + this.target.getName() + "!");
                     break;

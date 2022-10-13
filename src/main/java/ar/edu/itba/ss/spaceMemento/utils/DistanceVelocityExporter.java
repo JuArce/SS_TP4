@@ -26,7 +26,7 @@ public class DistanceVelocityExporter implements Exporter {
     public void open() {
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(fullPath));
-            writer.writeNext(new String[]{"Vo", "Distance"});
+            writer.writeNext(new String[]{"Vo", "Distance", "Time (Days)"});
             writer.close();
 
             this.csvWriterAppender = new CSVWriter(new FileWriter(fullPath, true), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
@@ -39,7 +39,8 @@ public class DistanceVelocityExporter implements Exporter {
     public void export(SolarSystem solarSystem) {
         try {
             final double distance = solarSystem.getSpaceshipDistances().stream().min(Double::compareTo).get();
-            csvWriterAppender.writeNext(new String[]{this.velocities.get(i) + "", distance + ""});
+            final double travelTime = solarSystem.getTravelTime();
+            csvWriterAppender.writeNext(new String[]{this.velocities.get(i) + "", distance + "", travelTime + ""});
             i++;
         } catch (Exception e) {
             e.printStackTrace(); //TODO: handle exception
