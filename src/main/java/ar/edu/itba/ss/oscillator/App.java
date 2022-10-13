@@ -1,6 +1,6 @@
 package ar.edu.itba.ss.oscillator;
 
-import ar.edu.itba.ss.oscillator.algorithms.GearPredictorCorrector;
+import ar.edu.itba.ss.oscillator.algorithms.Verlet;
 import ar.edu.itba.ss.oscillator.interfaces.Exporter;
 import ar.edu.itba.ss.oscillator.interfaces.OscillatorAlgorithm;
 import ar.edu.itba.ss.oscillator.models.Oscillator;
@@ -21,7 +21,7 @@ public class App {
                 .exporter(exporter)
                 .build();
 
-        final OscillatorAlgorithm algorithm = new GearPredictorCorrector();
+        final OscillatorAlgorithm algorithm = new Verlet(oscillator);
         oscillator.setAlgorithm(algorithm);
         oscillator.run();
         exporter.close();
