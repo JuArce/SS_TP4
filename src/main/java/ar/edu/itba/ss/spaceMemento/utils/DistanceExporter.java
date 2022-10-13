@@ -1,32 +1,39 @@
-package ar.edu.itba.ss.venusMission.utils;
+package ar.edu.itba.ss.spaceMemento.utils;
 
-import ar.edu.itba.ss.venusMission.interfaces.Exporter;
-import ar.edu.itba.ss.venusMission.models.SolarSystem;
+import ar.edu.itba.ss.spaceMemento.interfaces.Exporter;
+import ar.edu.itba.ss.spaceMemento.models.SolarSystem;
 import com.opencsv.CSVWriter;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-public class DistanceVelocityExporter implements Exporter {
+public class DistanceExporter implements Exporter {
+
     private static final String baseFilename = "src/main/resources/";
 
     private final String fullPath;
-    private final List<Double> velocities;
-    private int i;
+    private LocalDateTime date;
+    private final int minutesOffset;
     private CSVWriter csvWriterAppender;
 
-    public DistanceVelocityExporter(String path, String filename, List<Double> velocities) {
+
+    public DistanceExporter(String path, String filename, LocalDate date) {
+        this(path, filename, date, 24 * 60);
+    }
+
+    public DistanceExporter(String path, String filename, LocalDate date, int minutesOffset) {
         this.fullPath = baseFilename + path + filename;
-        this.velocities = velocities;
-        this.i = 0;
+        this.date = date.atStartOfDay();
+        this.minutesOffset = minutesOffset;
     }
 
     @Override
     public void open() {
         try {
             CSVWriter writer = new CSVWriter(new FileWriter(fullPath));
-            writer.writeNext(new String[]{"Vo", "Distance"});
+            writer.writeNext(new String[]{"Date", "Distance"});
             writer.close();
 
             this.csvWriterAppender = new CSVWriter(new FileWriter(fullPath, true), CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.DEFAULT_LINE_END);
@@ -39,8 +46,8 @@ public class DistanceVelocityExporter implements Exporter {
     public void export(SolarSystem solarSystem) {
         try {
             final double distance = solarSystem.getSpaceshipDistances().stream().min(Double::compareTo).get();
-            csvWriterAppender.writeNext(new String[]{this.velocities.get(i) + "", distance + ""});
-            i++;
+            csvWriterAppender.writeNext(new String[]{date.toString(), distance + ""});
+            this.date = this.date.plusMinutes(minutesOffset);
         } catch (Exception e) {
             e.printStackTrace(); //TODO: handle exception
         }

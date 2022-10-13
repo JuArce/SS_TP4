@@ -1,7 +1,7 @@
-package ar.edu.itba.ss.venusMission.models;
+package ar.edu.itba.ss.spaceMemento.models;
 
-import ar.edu.itba.ss.venusMission.interfaces.SpaceshipLauncher;
-import ar.edu.itba.ss.venusMission.utils.Pair;
+import ar.edu.itba.ss.spaceMemento.interfaces.SpaceshipLauncher;
+import ar.edu.itba.ss.spaceMemento.utils.Pair;
 
 import java.util.List;
 

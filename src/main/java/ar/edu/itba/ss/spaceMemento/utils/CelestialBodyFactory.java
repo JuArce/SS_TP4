@@ -1,7 +1,7 @@
-package ar.edu.itba.ss.venusMission.utils;
+package ar.edu.itba.ss.spaceMemento.utils;
 
-import ar.edu.itba.ss.venusMission.models.CelestialBody;
-import ar.edu.itba.ss.venusMission.models.Point;
+import ar.edu.itba.ss.spaceMemento.models.CelestialBody;
+import ar.edu.itba.ss.spaceMemento.models.Point;
 
 public class CelestialBodyFactory {
 

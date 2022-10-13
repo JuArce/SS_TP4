@@ -1,9 +1,9 @@
-package ar.edu.itba.ss.venusMission.algorithms;
+package ar.edu.itba.ss.spaceMemento.algorithms;
 
-import ar.edu.itba.ss.venusMission.interfaces.Algorithm;
-import ar.edu.itba.ss.venusMission.interfaces.Force;
-import ar.edu.itba.ss.venusMission.models.CelestialBody;
-import ar.edu.itba.ss.venusMission.utils.Pair;
+import ar.edu.itba.ss.spaceMemento.interfaces.Algorithm;
+import ar.edu.itba.ss.spaceMemento.interfaces.Force;
+import ar.edu.itba.ss.spaceMemento.models.CelestialBody;
+import ar.edu.itba.ss.spaceMemento.utils.Pair;
 import lombok.Getter;
 
 import java.util.ArrayList;

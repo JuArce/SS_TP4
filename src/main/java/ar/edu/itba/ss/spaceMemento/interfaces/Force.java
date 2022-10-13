@@ -1,7 +1,7 @@
-package ar.edu.itba.ss.venusMission.interfaces;
+package ar.edu.itba.ss.spaceMemento.interfaces;
 
-import ar.edu.itba.ss.venusMission.models.Point;
-import ar.edu.itba.ss.venusMission.utils.Pair;
+import ar.edu.itba.ss.spaceMemento.models.Point;
+import ar.edu.itba.ss.spaceMemento.utils.Pair;
 
 import java.util.List;
 

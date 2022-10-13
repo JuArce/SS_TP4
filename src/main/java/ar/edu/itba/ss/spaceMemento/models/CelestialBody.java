@@ -1,8 +1,8 @@
-package ar.edu.itba.ss.venusMission.models;
+package ar.edu.itba.ss.spaceMemento.models;
 
-import ar.edu.itba.ss.venusMission.interfaces.Force;
-import ar.edu.itba.ss.venusMission.interfaces.Movable;
-import ar.edu.itba.ss.venusMission.utils.Pair;
+import ar.edu.itba.ss.spaceMemento.interfaces.Force;
+import ar.edu.itba.ss.spaceMemento.interfaces.Movable;
+import ar.edu.itba.ss.spaceMemento.utils.Pair;
 import lombok.Getter;
 
 import java.util.List;

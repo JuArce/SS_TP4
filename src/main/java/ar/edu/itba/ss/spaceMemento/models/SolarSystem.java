@@ -1,10 +1,10 @@
-package ar.edu.itba.ss.venusMission.models;
+package ar.edu.itba.ss.spaceMemento.models;
 
-import ar.edu.itba.ss.venusMission.algorithms.GearPredictorCorrector;
-import ar.edu.itba.ss.venusMission.interfaces.Exporter;
-import ar.edu.itba.ss.venusMission.interfaces.SpaceshipLauncher;
-import ar.edu.itba.ss.venusMission.utils.CelestialBodyFactory;
-import ar.edu.itba.ss.venusMission.utils.Pair;
+import ar.edu.itba.ss.spaceMemento.algorithms.GearPredictorCorrector;
+import ar.edu.itba.ss.spaceMemento.interfaces.Exporter;
+import ar.edu.itba.ss.spaceMemento.interfaces.SpaceshipLauncher;
+import ar.edu.itba.ss.spaceMemento.utils.CelestialBodyFactory;
+import ar.edu.itba.ss.spaceMemento.utils.Pair;
 import lombok.Getter;
 
 import java.time.LocalDate;

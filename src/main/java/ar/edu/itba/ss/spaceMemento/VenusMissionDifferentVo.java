@@ -1,9 +1,9 @@
-package ar.edu.itba.ss.venusMission;
+package ar.edu.itba.ss.spaceMemento;
 
-import ar.edu.itba.ss.venusMission.interfaces.Exporter;
-import ar.edu.itba.ss.venusMission.models.CelestialBody;
-import ar.edu.itba.ss.venusMission.models.SolarSystem;
-import ar.edu.itba.ss.venusMission.utils.*;
+import ar.edu.itba.ss.spaceMemento.interfaces.Exporter;
+import ar.edu.itba.ss.spaceMemento.models.CelestialBody;
+import ar.edu.itba.ss.spaceMemento.models.SolarSystem;
+import ar.edu.itba.ss.spaceMemento.utils.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

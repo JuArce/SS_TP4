@@ -1,6 +1,6 @@
-package ar.edu.itba.ss.venusMission.interfaces;
+package ar.edu.itba.ss.spaceMemento.interfaces;
 
-import ar.edu.itba.ss.venusMission.models.CelestialBody;
+import ar.edu.itba.ss.spaceMemento.models.CelestialBody;
 
 import java.util.List;
 

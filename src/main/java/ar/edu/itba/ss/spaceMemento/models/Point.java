@@ -1,25 +1,20 @@
-package ar.edu.itba.ss.venusMission.utils;
+package ar.edu.itba.ss.spaceMemento.models;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class Pair {
-
+public class Point {
     @Getter @Setter
     private double x;
     @Getter @Setter
     private double y;
 
-    public Pair(double x, double y) {
+    public Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public Pair sum(Pair other) {
-        return new Pair(this.x + other.x, this.y + other.y);
-    }
-
-    public double distanceTo(Pair other) {
+    public double distanceTo(Point other) {
         return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
     }
 
