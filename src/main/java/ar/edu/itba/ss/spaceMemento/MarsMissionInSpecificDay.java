@@ -19,10 +19,10 @@ public class MarsMissionInSpecificDay {
         long startTime = System.currentTimeMillis();
 
         final double dt = 300;
-        final double tf = 365.25 * 24 * 3600 * 2;
+        final double tf = 365.25 * 24 * 3600 * 3;
 
         final LocalDate initialDate = LocalDate.of(2022, 9, 23);
-        final LocalDateTime launchDate = LocalDateTime.of(2023, 9, 24, 0, 0, 0);
+        final LocalDateTime launchDate = LocalDateTime.of(2024, 10, 30, 0, 20, 0);
         final int minutesOffset = launchDate.getHour() * 60 + launchDate.getMinute();
 
         final CelestialBody earth = CelestialBodyFactory.getEarth();
@@ -37,7 +37,7 @@ public class MarsMissionInSpecificDay {
         ovitoExporter.open();
 
         final String velocityFilename = "velocity_" + launchDate + ".csv";
-        final Exporter velocityExporter = new VelocityExporter("venusMission/output/velocity/", velocityFilename.replaceAll(":", "-"), initialDate.atStartOfDay());
+        final Exporter velocityExporter = new VelocityExporter("marsMission/output/velocity/", velocityFilename.replaceAll(":", "-"), initialDate.atStartOfDay());
         velocityExporter.open();
 
         final int spaceshipLaunchDay = (int) DAYS.between(initialDate, launchDate);

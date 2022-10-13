@@ -121,7 +121,7 @@ public class SolarSystem {
                 if (distance < this.target.getRadius()) {
                     System.out.println("Travel days: " + (this.t - this.spaceshipLaunchOffset) / 3600 / 24);
                     System.out.println("Relative velocity: " + this.spaceship.getVelocity().distanceTo(this.target.getVelocity()));
-                    System.out.println("Spaceship crashed!");
+                    System.out.println("Spaceship arrived to " + this.target.getName() + "!");
                     break;
                 }
             }
