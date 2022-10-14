@@ -14,9 +14,9 @@ import static java.time.temporal.ChronoUnit.DAYS;
 public class MarsMissionDifferentMinutes {
     public static void main(String[] args) {
         final LocalDate initialDate = LocalDate.of(2022, 9, 23);
-        final LocalDate launchDate = LocalDate.of(2024, 10, 29);
-        final int minutesOffset = 10;
-        final int days = 3;
+        final LocalDate launchDate = LocalDate.of(2024, 10, 20);
+        final int minutesOffset = 5;
+        final int days = 1;
 
         final Exporter distanceExporter = new DistanceExporter("marsMission/output/", "distance_" + launchDate + "_offset_" + minutesOffset + "_min" + ".csv", launchDate, minutesOffset);
         distanceExporter.open();

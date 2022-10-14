@@ -22,7 +22,7 @@ public class MarsMissionInSpecificDay {
         final double tf = 365.25 * 24 * 3600 * 3;
 
         final LocalDate initialDate = LocalDate.of(2022, 9, 23);
-        final LocalDateTime launchDate = LocalDateTime.of(2024, 10, 30, 0, 20, 0);
+        final LocalDateTime launchDate = LocalDateTime.of(2024, 10, 20, 17, 55, 0);
         final int minutesOffset = launchDate.getHour() * 60 + launchDate.getMinute();
 
         final CelestialBody earth = CelestialBodyFactory.getEarth();
