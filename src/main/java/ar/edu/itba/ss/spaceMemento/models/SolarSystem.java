@@ -124,7 +124,7 @@ public class SolarSystem {
                     this.travelTime = (this.t - this.spaceshipLaunchOffset) / 3600 / 24;
                     System.out.println("Travel days: " + this.travelTime);
                     System.out.println("Relative velocity: " + this.spaceship.getVelocity().distanceTo(this.target.getVelocity()));
-                    System.out.println("Spaceship arrived to " + this.target.getName() + "!");
+                    System.out.println("Spaceship arrived to " + this.target.getName() + " on " + this.initialDate.atStartOfDay().plusSeconds((long)this.t) + "!");
                     break;
                 }
             }
